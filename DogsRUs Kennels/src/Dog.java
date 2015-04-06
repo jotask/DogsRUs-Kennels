@@ -20,7 +20,7 @@ public class Dog extends Animals{
 	public Dog(String name, ArrayList<Owner> owners, boolean likeBones, String food, int mealsPerDay) {
 		super(name, owners, food, mealsPerDay);
 		
-		this.likesBones = likeBones;
+		likesBones = likeBones;
 		
 	}
 

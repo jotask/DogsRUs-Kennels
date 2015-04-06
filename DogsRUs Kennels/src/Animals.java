@@ -7,7 +7,15 @@ public class Animals {
 	public ArrayList<Owner> originalOwners;
 	public String favFood;
 	public int foodPerDay;
-	
+
+
+	/**
+	 * Constructor for the SuperClass Animals
+	 * @param name The dog's name
+	 * @param owners A list of original owners: a copy is made
+	 * @param food The kind of food it eats
+	 * @param mealsPerDay Number of feeds per day 
+	 */
 	public Animals(String n, ArrayList<Owner> owners, String food, int mealsPerDay){
 
 		name = n;
@@ -21,8 +29,8 @@ public class Animals {
 			originalOwners.add(copy);
 		}
 		
-		this.favFood = food;
-		this.foodPerDay = mealsPerDay;
+		favFood = food;
+		foodPerDay = mealsPerDay;
 		
 	}
 
