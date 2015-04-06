@@ -7,11 +7,7 @@ import java.util.ArrayList;
  */
 public class Dog extends Animals{
 
-	private ArrayList<Owner> originalOwners;
 	private boolean likesBones;
-	private String dogName;
-	private String favFood;
-	private int foodPerDay;
 
 	/**
 	 * Constructor for the dog
@@ -22,21 +18,18 @@ public class Dog extends Animals{
 	 * @param mealsPerDay Number of feeds per day 
 	 */
 	public Dog(String name, ArrayList<Owner> owners, boolean likeBones, String food, int mealsPerDay) {
-		super();
+		super(name, owners, food, mealsPerDay);
 		
-		dogName = name;
-		originalOwners = new ArrayList<Owner>();
-		
-		// We make a true copy of the owners ArrayList to make sure that we
-		// don't break encapsulation: i.e. don't share object references with
-		// other code
-		for(Owner o: owners){
-			Owner copy = new Owner(o.getName(), o.getPhone());
-			originalOwners.add(copy);
-		}
 		this.likesBones = likeBones;
-		this.favFood = food;
-		this.foodPerDay = mealsPerDay;
+		
+	}
+
+	/**
+	 * Does the dog like bones?
+	 * @return true if he does
+	 */
+	public boolean getLikesBones() {
+		return likesBones;
 	}
 
 	/**
@@ -53,10 +46,10 @@ public class Dog extends Animals{
 		if (getClass() != obj.getClass())
 			return false;
 		Dog other = (Dog) obj;
-		if (dogName == null) {
-			if (other.dogName != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!dogName.equals(other.dogName))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
@@ -65,7 +58,7 @@ public class Dog extends Animals{
 	 * A basic implementation to just return all the data in string form
 	 */
 	public String toString() {
-		return "Dog name:" + dogName + "Likes Bones?:" + likesBones
+		return "Dog name:" + name + "Likes Bones?:" + likesBones
 				+ "Original Owner:" + originalOwners + "Favfood:" + favFood
 				+ "FoodPerDay:" + foodPerDay;
 	}

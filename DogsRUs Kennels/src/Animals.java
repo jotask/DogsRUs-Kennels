@@ -3,23 +3,35 @@ import java.util.ArrayList;
 
 public class Animals {
 	
-	private String name;
-	private ArrayList<Owner> originalOwners;
-	private boolean likesBones;
-	private String dogName;
-	private String favFood;
-	private int foodPerDay;
+	public String name;
+	public ArrayList<Owner> originalOwners;
+	public String favFood;
+	public int foodPerDay;
 	
-	public Animals(){
+	public Animals(String n, ArrayList<Owner> owners, String food, int mealsPerDay){
+
+		name = n;
+		originalOwners = new ArrayList<Owner>();
+		
+		// We make a true copy of the owners ArrayList to make sure that we
+		// don't break encapsulation: i.e. don't share object references with
+		// other code
+		for(Owner o: owners){
+			Owner copy = new Owner(o.getName(), o.getPhone());
+			originalOwners.add(copy);
+		}
+		
+		this.favFood = food;
+		this.foodPerDay = mealsPerDay;
 		
 	}
 
 	public String getName() {
-		return dogName;
+		return name;
 	}
 
 	public void setName(String newName) {
-		dogName = newName;
+		name = newName;
 	}
 	
 	/**
@@ -31,14 +43,7 @@ public class Animals {
 		result = originalOwners.toArray(result);
 		return result;
 	}
-
-	/**
-	 * Does the dog like bones?
-	 * @return true if he does
-	 */
-	public boolean getLikesBones() {
-		return likesBones;
-	}
+	
 	/**
 	 * How many times a day to feed the dog
 	 * @param feeds The number of feeds per day
