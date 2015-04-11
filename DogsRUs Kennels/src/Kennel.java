@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class Kennel {
 	private String name;
-	private ArrayList<Dog> dogs;
+	private ArrayList<Animal> animals;
 	private int nextFreeLocation;
 	private int capacity;
 
@@ -30,10 +30,10 @@ public class Kennel {
 	 * @param maxNoDogs
 	 *            The capacity of the kennel
 	 */
-	public Kennel(int maxNoDogs) {
+	public Kennel(int maxNoAnimal) {
 		nextFreeLocation = 0; // no Dogs in collection at start
-		capacity = maxNoDogs;
-		dogs = new ArrayList<Dog>(capacity); // set up default. This can
+		capacity = maxNoAnimal;
+		animals = new ArrayList<Animal>(capacity); // set up default. This can
 												// actually be exceeded
 												// when using ArrayList but we
 												// won't allow that
@@ -54,10 +54,10 @@ public class Kennel {
 	 * Set the size of the kennel
 	 * @param capacity The max dogs we can house
 	 */
-	public void setCapacity(int capacity){
+	public void setCapacity(int cap){
 		// This should really check to see if we already have dogs
 		// in the kennel and reducing the capacity would lead to evictions!
-		this.capacity = capacity;
+		capacity = cap;
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class Kennel {
 	 * 
 	 * @return int Current number of dogs in the kennel
 	 */
-	public int getNumOfDogs() {
+	public int getNumOfAnimals() {
 		return nextFreeLocation;
 	}
 
@@ -93,14 +93,14 @@ public class Kennel {
 	 * @param theDog
 	 *            A new dog to home
 	 */
-	public void addDog(Dog theDog) {
+	public void addAnimal(Animal theAnimal) {
 		if (nextFreeLocation >= capacity) {
 			System.out.println("Sorry kennel is full - cannot add team");
 			return;
 		}
 		// we add in the position indexed by nextFreeLocation
 		// This starts at zero
-		dogs.add(theDog);
+		animals.add(theAnimal);
 
 		// now increment index ready for next one
 		nextFreeLocation = nextFreeLocation + 1;
@@ -113,15 +113,15 @@ public class Kennel {
 	 *            The dog to remove
 	 */
 	public void removeDog(String who) {
-		Dog which = null;
+		Animal which = null;
 		// Search for the dog by name
-		for (Dog d : dogs) {
+		for (Animal d : animals) {
 			if (who.equals(d.getName())) {
 				which = d;
 			}
 		}
 		if (which != null) {
-			dogs.remove(which); // Requires that Dog has an equals method
+			animals.remove(which); // Requires that Dog has an equals method
 			System.out.println("removed " + who);
 			nextFreeLocation = nextFreeLocation - 1;
 		} else
@@ -133,7 +133,7 @@ public class Kennel {
 	 */
 	public String toString() {
 		String results = "Data in Kennel " + name + " is:";
-		for (Dog d : dogs) {
+		for (Animal d : animals) {
 			results = results + d.toString() + "\n";
 		}
 		return results;
@@ -143,9 +143,9 @@ public class Kennel {
 	 * Returns an array of the dogs in the kennels
 	 * @return An array of the correct size
 	 */
-	public Dog[] obtainAllDogs() {
-		Dog[] result = new Dog[dogs.size()];
-		result = dogs.toArray(result);
+	public Animal[] obtainAllAnimal() {
+		Animal[] result = new Animal[animals.size()];
+		result = animals.toArray(result);
 		return result;
 	}
 
@@ -153,18 +153,18 @@ public class Kennel {
 	 * Only returns those dogs who like bones
 	 * @return An array of dogs of the correct size. If no dogs like bones then returns an empty array (size 0)
 	 */
-	public Dog[] obtainDogsWhoLikeBones() {
-		// ENTER CODE HERE
-		Dog[] result = null;
+	public Animal[] obtainAnimalWhoLikeBones() {
+		//TODO ENTER CODE HERE
+		Animal[] result = null;
 
 		// Create a copy of the ArrayList and return as an array of the correct
 		// size
 		return result;
 	}
 
-	public Dog search(String name) {
-		// ENTER CODE HERE
-		Dog result = null;
+	public Animal search(String name) {
+		//TODO ENTER CODE HERE
+		Animal result = null;
 
 		return result;
 	}

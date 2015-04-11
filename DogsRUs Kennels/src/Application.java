@@ -14,7 +14,7 @@ import java.util.Scanner;
  * @author Lynda Thomas and Chris Loftus
  * @version 1.1 (16th March 2015)
  */
-public class KennelDemo {
+public class Application {
 	private String filename; // holds the name of the file
 	private Kennel kennel; // holds the kennel
 	private Scanner scan; // so we can read from keyboard
@@ -23,7 +23,7 @@ public class KennelDemo {
 	 * Notice how we can make this private, since we only call from main which
 	 * is in this class. We don't want this class to be used by any other class.
 	 */
-	private KennelDemo() {
+	private Application() {
 		scan = new Scanner(System.in);
 		System.out.print("Please enter the filename of kennel information: ");
 		filename = scan.next();
@@ -41,8 +41,9 @@ public class KennelDemo {
 		try(FileReader fr = new FileReader(filename);
 			BufferedReader br = new BufferedReader(fr);
 			Scanner infile = new Scanner(br)){
-			
+
 			String kennelName = infile.nextLine();
+			//String kennelName = "dogsrus.txt";
 			int kennelSize = infile.nextInt();
 			infile.nextLine();
 			kennel.setCapacity(kennelSize);
@@ -61,13 +62,14 @@ public class KennelDemo {
 					owners.add(owner);
 				}
 				boolean likesBones = infile.nextBoolean();
-				infile.nextLine();
 				int feedsPerDay = infile.nextInt();
-				infile.nextLine(); 
+				infile.nextLine();
 				String favFood = infile.nextLine();
 				
-				Dog dog = new Dog(dogName, owners, likesBones, favFood, feedsPerDay);
-				kennel.addDog(dog);
+				Animal dog = new Dog(dogName, owners, likesBones, favFood, feedsPerDay);
+				
+				//System.out.println(dog.toString());
+				kennel.addAnimal(dog);
 			}
 			
 		} catch (FileNotFoundException e) {
@@ -77,6 +79,70 @@ public class KennelDemo {
 			System.err.println("An unexpected error occurred when trying to open the file " + filename);
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	private void addAnimal(){
+		String response;
+		do {
+			System.out.println("1 - Add Dog");
+			System.out.println("2 - Add Cat");
+			System.out.println("Q - Back to menu");
+			System.out.println("Which animal you want add:");
+			scan = new Scanner(System.in);
+			response = scan.nextLine().toUpperCase();
+			switch (response) {
+			case "1":
+				addDog();
+				break;
+			case "2":
+				addCat();;
+				break;
+			case "Q":
+				break;
+			default:
+				System.out.println("Try again");
+			}
+		} while (!(response.equals("Q")));
+	}
+
+	private void addDog() {
+		boolean lb = false;
+		System.out.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
+		String name = scan.nextLine();
+		ArrayList<Owner> owners = getOwners();
+		System.out.println("Does he like bones? (Y/N)");
+		String likeBones;
+		likeBones = scan.nextLine().toUpperCase();
+		if (likeBones.equals("Y")) {
+			lb = true;
+		}
+		System.out.println("What is his/her favourite food?");
+		String fav;
+		fav = scan.nextLine();
+		System.out.println("How many times is he/she fed a day? (as a number)");
+		int numTimes;
+		numTimes = scan.nextInt(); // This can be improved (InputMismatchException?)
+		scan.nextLine();
+		Dog dog = new Dog(name, owners, lb, fav, numTimes);
+		kennel.addAnimal(dog);
+		
+	}
+
+	private void addCat() {
+		System.out.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
+		String name = scan.nextLine();
+		ArrayList<Owner> owners = getOwners();
+		System.out.println("Does he like bones? (Y/N)");
+		System.out.println("What is his/her favourite food?");
+		String fav;
+		fav = scan.nextLine();
+		System.out.println("How many times is he/she fed a day? (as a number)");
+		int numTimes;
+		numTimes = scan.nextInt(); // This can be improved (InputMismatchException?)
+		scan.nextLine();
+		Cat cat = new Cat(name, owners, fav, numTimes);
+		kennel.addAnimal(cat);
+		
 	}
 
 	/*
@@ -91,7 +157,7 @@ public class KennelDemo {
 			response = scan.nextLine().toUpperCase();
 			switch (response) {
 			case "1":
-				admitDog();
+				addAnimal();
 				break;
 			case "2":
 				changeKennelName();
@@ -100,7 +166,7 @@ public class KennelDemo {
 				printDogsWithBones();
 				break;
 			case "4":
-				searchForDog();
+				searchForAnimal();
 				break;
 			case "5":
 				removeDog();
@@ -124,9 +190,9 @@ public class KennelDemo {
 	}
 
 	private void printDogsWithBones() {
-		Dog[] dogsWithBones = kennel.obtainDogsWhoLikeBones();
+		Animal[] animalWithBones = kennel.obtainAnimalWhoLikeBones();
 		System.out.println("Dogs with bones: ");
-		for (Dog d: dogsWithBones){
+		for (Animal d: animalWithBones){
 			System.out.println(d);
 		}	
 	}
@@ -148,9 +214,9 @@ public class KennelDemo {
 			
 			outfile.println(kennel.getName());
 			outfile.println(kennel.getCapacity());
-			outfile.println(kennel.getNumOfDogs());
-			Dog[] dogs = kennel.obtainAllDogs();
-			for (Dog d: dogs){
+			outfile.println(kennel.getNumOfAnimals());
+			Animal[] dogs = kennel.obtainAllAnimal();
+			for (Animal d: dogs){
 				outfile.println(d.getName());
 				Owner[] owners = d.getOriginalOwners();
 				outfile.println(owners.length);
@@ -158,7 +224,7 @@ public class KennelDemo {
 					outfile.println(o.getName());
 					outfile.println(o.getPhone());
 				}
-				outfile.println(d.getLikesBones());
+				//outfile.println(d.getLikesBones());
 				outfile.println(d.getFeedsPerDay());
 				outfile.println(d.getFavouriteFood());
 			}
@@ -175,10 +241,10 @@ public class KennelDemo {
 		kennel.removeDog(dogtoberemoved);
 	}
 
-	private void searchForDog() {
+	private void searchForAnimal() {
 		System.out.println("which dog do you want to search for");
 		String name = scan.nextLine();
-		Dog dog = kennel.search(name);
+		Animal dog = kennel.search(name);
 		if (dog != null){
 			System.out.println(dog.toString());
 		} else {
@@ -191,35 +257,11 @@ public class KennelDemo {
 		kennel.setName(name);
 	}
 
-	private void admitDog() {
-		boolean lb = false;
-		System.out
-				.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
-		String name = scan.nextLine();
-		ArrayList<Owner> owners = getOwners();
-		System.out.println("Does he like bones? (Y/N)");
-		String likeBones;
-		likeBones = scan.nextLine().toUpperCase();
-		if (likeBones.equals("Y")) {
-			lb = true;
-		}
-		System.out.println("What is his/her favourite food?");
-		String fav;
-		fav = scan.nextLine();
-		System.out.println("How many times is he/she fed a day? (as a number)");
-		int numTimes;
-		numTimes = scan.nextInt(); // This can be improved (InputMismatchException?)
-		scan.nextLine();
-		Dog newDog = new Dog(name, owners, lb, fav, numTimes);
-		kennel.addDog(newDog);
-	}
-
 	private ArrayList<Owner> getOwners() {
 		ArrayList<Owner> owners = new ArrayList<Owner>();
 		String answer;
 		do {
-			System.out
-					.println("Enter on separate lines: owner-name owner-phone");
+			System.out.println("Enter on separate lines: owner-name owner-phone");
 			String ownName = scan.nextLine();
 			String ownPhone = scan.nextLine();
 			Owner own = new Owner(ownName, ownPhone);
@@ -231,23 +273,23 @@ public class KennelDemo {
 	}
 
 	private void printMenu() {
-		System.out.println("1 -  add a new Dog ");
-		System.out.println("2 -  set up Kennel name");
-		System.out.println("3 -  print all dogs who like bones");
-		System.out.println("4 -  search for a dog");
-		System.out.println("5 -  remove a dog");
-		System.out.println("6 -  set kennel capacity");
+		System.out.println("1 - Add a new Animal");
+		System.out.println("2 - set up Kennel name");
+		System.out.println("3 - print all dogs who like bones");
+		System.out.println("4 - search for a dog");
+		System.out.println("5 - remove a dog");
+		System.out.println("6 - set kennel capacity");
 		System.out.println("q - Quit");
 	}
 
 	// /////////////////////////////////////////////////
 	public static void main(String args[]) {
 		System.out.println("**********HELLO***********");
-		KennelDemo demo = new KennelDemo();
-		demo.initialise();
-		demo.runMenu();
-		demo.printAll();
-		demo.save();
+		Application app = new Application();
+		app.initialise();
+		app.runMenu();
+		app.printAll();
+		app.save();
 		System.out.println("***********GOODBYE**********");
 	}
 }
