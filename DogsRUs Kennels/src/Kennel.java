@@ -115,6 +115,8 @@ public class Kennel {
 	public void removeDog(String who) {
 		Animal which = null;
 		// Search for the dog by name
+		
+		//TODO instanceof operator is considered to be bad OO-design, because it is not scalable
 		for (Animal d : animals) {
 			if (who.equals(d.getName())) {
 				which = d;
@@ -144,7 +146,12 @@ public class Kennel {
 	 * @return An array of the correct size
 	 */
 	public Animal[] obtainAllAnimal() {
-		Animal[] result = new Animal[animals.size()];
+		// TODO Return an array of all animals on the kennel
+		//FIXME the arrays are always null
+				
+		System.out.println(animals.toString());
+		
+		Animal[] result = new Animal[animals.size()];//if size of array is smaller then list it will be automatically adjusted.
 		result = animals.toArray(result);
 		return result;
 	}
@@ -154,8 +161,18 @@ public class Kennel {
 	 * @return An array of dogs of the correct size. If no dogs like bones then returns an empty array (size 0)
 	 */
 	public Animal[] obtainAnimalWhoLikeBones() {
-		//TODO ENTER CODE HERE
-		Animal[] result = null;
+		//TODO Return dogs who like only bones
+		Animal[] result = new Animal[animals.size()];
+		result = animals.toArray(result);
+		
+		for(Animal a: animals){
+			
+			if(a instanceof Dog) {
+				System.out.println("its a dog");
+			}else if(a instanceof Cat){
+				System.out.println("its a cat");
+			}
+		}
 
 		// Create a copy of the ArrayList and return as an array of the correct
 		// size
@@ -163,7 +180,7 @@ public class Kennel {
 	}
 
 	public Animal search(String name) {
-		//TODO ENTER CODE HERE
+		//TODO Provide a search of animals
 		Animal result = null;
 
 		return result;

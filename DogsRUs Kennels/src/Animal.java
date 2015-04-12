@@ -1,7 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Animal {
+public class Animal implements Serializable{
+	
+	private static final long serialVersionUID = 2364837888974161274L;
 	
 	public String name;
 	public ArrayList<Owner> originalOwners;
@@ -105,6 +108,13 @@ public class Animal {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Animal [name=" + name + ", originalOwners=" + originalOwners
+				+ ", favFood=" + favFood + ", foodPerDay=" + foodPerDay
+				+ ", canShareRun=" + canShareRun + "]";
 	}
 
 }

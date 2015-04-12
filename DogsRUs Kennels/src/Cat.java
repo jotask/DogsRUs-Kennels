@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 public class Cat extends Animal{
 
+	private static final long serialVersionUID = 2304866428860873200L;
+
 	/**
 	 * Constructor for the cat
 	 * @param name The cat's name
@@ -24,7 +26,7 @@ public class Cat extends Animal{
 	 * A basic implementation to just return all the data in string form
 	 */
 	public String toString() {
-		return "Dog name:" + name + "Original Owner:" + originalOwners + "Favfood:" + favFood
+		return "Cat name:" + name + "Original Owner:" + originalOwners + "Favfood:" + favFood
 				+ "FoodPerDay:" + foodPerDay;
 	}
 

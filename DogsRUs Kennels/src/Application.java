@@ -47,11 +47,13 @@ public class Application {
 			int kennelSize = infile.nextInt();
 			infile.nextLine();
 			kennel.setCapacity(kennelSize);
-			int numDogs = infile.nextInt();
+			int numAnimals = infile.nextInt();
 			infile.nextLine();
 			kennel.setName(kennelName);
-			for(int i=0; i < numDogs; i++){
-				String dogName = infile.nextLine();
+			for(int i=0; i < numAnimals; i++){
+				String typeAnimal = infile.nextLine();
+				
+				String animalName = infile.nextLine();
 				int numOwners = infile.nextInt();
 				infile.nextLine();
 				ArrayList<Owner> owners = new ArrayList<>();
@@ -61,15 +63,23 @@ public class Application {
 					Owner owner = new Owner(name, phone);
 					owners.add(owner);
 				}
-				boolean likesBones = infile.nextBoolean();
+				boolean likesBones = false;
+				if(typeAnimal == "dog"){
+					likesBones = infile.nextBoolean();
+				}
 				int feedsPerDay = infile.nextInt();
 				infile.nextLine();
 				String favFood = infile.nextLine();
 				
-				Animal dog = new Dog(dogName, owners, likesBones, favFood, feedsPerDay);
-				
-				//System.out.println(dog.toString());
-				kennel.addAnimal(dog);
+				Animal anim = null;
+				if(typeAnimal == "dog"){
+					anim = new Dog(animalName, owners, likesBones, favFood, feedsPerDay);
+				}else if(typeAnimal == "cat"){
+					anim = new Cat(animalName, owners, favFood, feedsPerDay);
+				}
+				System.out.println(animalName);
+				System.out.println(anim);
+				kennel.addAnimal(anim);
 			}
 			
 		} catch (FileNotFoundException e) {
@@ -174,12 +184,27 @@ public class Application {
 			case "6":
 				setKennelCapacity();
 			    break;
+			case "7":
+				displayAllAnimals();
+			    break;
 			case "Q":
 				break;
 			default:
 				System.out.println("Try again");
 			}
 		} while (!(response.equals("Q")));
+	}
+
+	private void displayAllAnimals() {
+		Animal[] allAnimals = kennel.obtainAllAnimal();
+		
+		//System.out.println("Length: " + allAnimals.length);
+				
+		for (Animal anim : allAnimals){
+			System.out.println(anim);
+			
+		}
+		
 	}
 
 	private void setKennelCapacity() {
@@ -191,10 +216,14 @@ public class Application {
 
 	private void printDogsWithBones() {
 		Animal[] animalWithBones = kennel.obtainAnimalWhoLikeBones();
-		System.out.println("Dogs with bones: ");
-		for (Animal d: animalWithBones){
-			System.out.println(d);
-		}	
+		if(animalWithBones != null){
+			System.out.println("Dogs with bones: ");
+			for (Animal d: animalWithBones){
+				System.out.println(d);
+			}
+		}else{
+			System.out.println("Sorry we don't have any dogs who like bones in this kennel.");
+		}
 	}
 
 	/*
@@ -276,9 +305,10 @@ public class Application {
 		System.out.println("1 - Add a new Animal");
 		System.out.println("2 - set up Kennel name");
 		System.out.println("3 - print all dogs who like bones");
-		System.out.println("4 - search for a dog");
-		System.out.println("5 - remove a dog");
+		System.out.println("4 - search for a pet");
+		System.out.println("5 - remove a pet");
 		System.out.println("6 - set kennel capacity");
+		System.out.println("7 - display all animals");
 		System.out.println("q - Quit");
 	}
 

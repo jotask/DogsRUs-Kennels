@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 public class Dog extends Animal{
 
+	private static final long serialVersionUID = 8859045667757662983L;
+	
 	private boolean likesBones;
 
 	/**
