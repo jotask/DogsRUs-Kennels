@@ -1,12 +1,16 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+package ac.uk.jov2.dogsRus;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import ac.uk.jov2.dogsRus.animals.Animal;
+import ac.uk.jov2.dogsRus.animals.Cat;
+import ac.uk.jov2.dogsRus.animals.Dog;
 
 /**
  * This class runs a Kennel
@@ -15,8 +19,8 @@ import java.util.Scanner;
  * @version 1.1 (16th March 2015)
  */
 public class Application {
-	private String filename; // holds the name of the file
-	private Kennel kennel; // holds the kennel
+	private static String filename; // holds the name of the file
+	private static Kennel kennel; // holds the kennel
 	private Scanner scan; // so we can read from keyboard
 
 	/*
@@ -25,70 +29,15 @@ public class Application {
 	 */
 	private Application() {
 		scan = new Scanner(System.in);
-		System.out.print("Please enter the filename of kennel information: ");
-		filename = scan.next();
-		
-		kennel = new Kennel();
+		chooseKennel();
 	}
-
-	/*
-	 * initialise() method runs from the main and reads from a file
-	 */
-	private void initialise() {
-		System.out.println("Using file " + filename);
-		
-		// Using try-with-resource (see my slides from session 15)
-		try(FileReader fr = new FileReader(filename);
-			BufferedReader br = new BufferedReader(fr);
-			Scanner infile = new Scanner(br)){
-
-			String kennelName = infile.nextLine();
-			//String kennelName = "dogsrus.txt";
-			int kennelSize = infile.nextInt();
-			infile.nextLine();
-			kennel.setCapacity(kennelSize);
-			int numAnimals = infile.nextInt();
-			infile.nextLine();
-			kennel.setName(kennelName);
-			for(int i=0; i < numAnimals; i++){
-				String typeAnimal = infile.nextLine();
-				
-				String animalName = infile.nextLine();
-				int numOwners = infile.nextInt();
-				infile.nextLine();
-				ArrayList<Owner> owners = new ArrayList<>();
-				for(int oCount=0; oCount < numOwners; oCount++){
-					String name = infile.nextLine();
-					String phone = infile.nextLine();
-					Owner owner = new Owner(name, phone);
-					owners.add(owner);
-				}
-				boolean likesBones = false;
-				if(typeAnimal == "dog"){
-					likesBones = infile.nextBoolean();
-				}
-				int feedsPerDay = infile.nextInt();
-				infile.nextLine();
-				String favFood = infile.nextLine();
-				
-				Animal anim = null;
-				if(typeAnimal == "dog"){
-					anim = new Dog(animalName, owners, likesBones, favFood, feedsPerDay);
-				}else if(typeAnimal == "cat"){
-					anim = new Cat(animalName, owners, favFood, feedsPerDay);
-				}
-				System.out.println(animalName);
-				System.out.println(anim);
-				kennel.addAnimal(anim);
-			}
-			
-		} catch (FileNotFoundException e) {
-			System.err.println("The file: " + " does not exist. Assuming first use and an empty file." +
-		                       " If this is not the first use then have you accidentally deleted the file?");
-		} catch (IOException e) {
-			System.err.println("An unexpected error occurred when trying to open the file " + filename);
-			System.err.println(e.getMessage());
-		}
+	
+	private void chooseKennel() {
+		//System.out.print("Please enter the filename of kennel information: ");
+		//filename = scan.next();
+		filename = "dogsrus";
+		kennel = new Kennel();
+		load(filename);	
 	}
 	
 	private void addAnimal(){
@@ -187,6 +136,12 @@ public class Application {
 			case "7":
 				displayAllAnimals();
 			    break;
+			case "8":
+				printAll();
+			    break;
+			case "9":
+				chooseKennel();
+			    break;
 			case "Q":
 				break;
 			default:
@@ -233,41 +188,11 @@ public class Application {
 		System.out.println(kennel);
 	}
 
-	/*
-	 * save() method runs from the main and writes back to file
-	 */
-	private void save() {
-		try(FileWriter fw = new FileWriter(filename);
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter outfile = new PrintWriter(bw);){
-			
-			outfile.println(kennel.getName());
-			outfile.println(kennel.getCapacity());
-			outfile.println(kennel.getNumOfAnimals());
-			Animal[] dogs = kennel.obtainAllAnimal();
-			for (Animal d: dogs){
-				outfile.println(d.getName());
-				Owner[] owners = d.getOriginalOwners();
-				outfile.println(owners.length);
-				for(Owner o: owners){
-					outfile.println(o.getName());
-					outfile.println(o.getPhone());
-				}
-				//outfile.println(d.getLikesBones());
-				outfile.println(d.getFeedsPerDay());
-				outfile.println(d.getFavouriteFood());
-			}
-		} catch (IOException e) {
-			System.err.println("Problem when trying to write to file: " + filename);
-		}
-
-	}
-
 	private void removeDog() {
 		System.out.println("which dog do you want to remove");
 		String dogtoberemoved;
 		dogtoberemoved = scan.nextLine();
-		kennel.removeDog(dogtoberemoved);
+		kennel.removeAnimal(dogtoberemoved);
 	}
 
 	private void searchForAnimal() {
@@ -302,6 +227,7 @@ public class Application {
 	}
 
 	private void printMenu() {
+		System.out.println("---- " + kennel.getName() + " ----");
 		System.out.println("1 - Add a new Animal");
 		System.out.println("2 - set up Kennel name");
 		System.out.println("3 - print all dogs who like bones");
@@ -309,17 +235,53 @@ public class Application {
 		System.out.println("5 - remove a pet");
 		System.out.println("6 - set kennel capacity");
 		System.out.println("7 - display all animals");
+		System.out.println("8 - Print Kennel");
+		System.out.println("9 - change Kennel");
 		System.out.println("q - Quit");
 	}
+
+   private void save(String file){
+	   System.out.println("saveMethod");
+       try{
+         FileOutputStream fos= new FileOutputStream(file);
+         ObjectOutputStream oos= new ObjectOutputStream(fos);
+         oos.writeObject(kennel);
+         oos.close();
+         fos.close();
+       }catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+       System.out.println("SaveMethodDone!");
+   }
+
+   private void load(String file){
+	   System.out.println("loadMethod");
+	   Kennel k;
+       try
+       {
+           FileInputStream fis = new FileInputStream(file);
+           ObjectInputStream ois = new ObjectInputStream(fis);
+           k = (Kennel) ois.readObject();
+           ois.close();
+           fis.close();
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+            return;
+         }catch(ClassNotFoundException c){
+            System.out.println("Class not found");
+            c.printStackTrace();
+            return;
+         }
+       kennel = k;
+	   System.out.println("loadMethodDone!");
+   }
 
 	// /////////////////////////////////////////////////
 	public static void main(String args[]) {
 		System.out.println("**********HELLO***********");
 		Application app = new Application();
-		app.initialise();
 		app.runMenu();
-		app.printAll();
-		app.save();
+		app.save(filename);
 		System.out.println("***********GOODBYE**********");
 	}
 }

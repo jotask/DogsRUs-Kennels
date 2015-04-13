@@ -1,5 +1,8 @@
+package ac.uk.jov2.dogsRus.animals;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import ac.uk.jov2.dogsRus.Owner;
 
 
 public class Animal implements Serializable{
