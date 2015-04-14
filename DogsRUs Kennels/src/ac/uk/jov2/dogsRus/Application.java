@@ -19,9 +19,10 @@ import ac.uk.jov2.dogsRus.animals.Dog;
  * @version 1.1 (16th March 2015)
  */
 public class Application {
-	private static String filename; // holds the name of the file
+
 	private static Kennel kennel; // holds the kennel
 	private Scanner scan; // so we can read from keyboard
+	private static DataBase db;
 
 	/*
 	 * Notice how we can make this private, since we only call from main which
@@ -35,9 +36,9 @@ public class Application {
 	private void chooseKennel() {
 		//System.out.print("Please enter the filename of kennel information: ");
 		//filename = scan.next();
-		filename = "dogsrus";
+		db = new DataBase();
 		kennel = new Kennel();
-		load(filename);	
+		load(db.getDB());	
 	}
 	
 	private void addAnimal(){
@@ -159,6 +160,7 @@ public class Application {
 				printAll();
 			    break;
 			case "9":
+				save(db.getDB());
 				chooseKennel();
 			    break;
 			case "Q":
@@ -223,6 +225,7 @@ public class Application {
 	}
 
 	private void changeKennelName() {
+		System.out.println("Enter the name for the kennel");
 		String name = scan.nextLine();
 		kennel.setName(name);
 	}
@@ -256,10 +259,10 @@ public class Application {
 		System.out.println("q - Quit");
 	}
 
-   private void save(String file){
-	   System.out.println("saveMethod");
+   private void save(String db){
+	   System.out.println("SaveIt");
        try{
-         FileOutputStream fos= new FileOutputStream(file);
+         FileOutputStream fos= new FileOutputStream(db);
          ObjectOutputStream oos= new ObjectOutputStream(fos);
          oos.writeObject(kennel);
          oos.close();
@@ -267,15 +270,12 @@ public class Application {
        }catch(IOException ioe){
             ioe.printStackTrace();
         }
-       System.out.println("SaveMethodDone!");
    }
 
-   private void load(String file){
-	   System.out.println("loadMethod");
+   private void load(String db){
 	   Kennel k;
-       try
-       {
-           FileInputStream fis = new FileInputStream(file);
+       try{
+           FileInputStream fis = new FileInputStream(db);
            ObjectInputStream ois = new ObjectInputStream(fis);
            k = (Kennel) ois.readObject();
            ois.close();
@@ -289,7 +289,6 @@ public class Application {
             return;
          }
        kennel = k;
-	   System.out.println("loadMethodDone!");
    }
 
 	// /////////////////////////////////////////////////
@@ -297,7 +296,7 @@ public class Application {
 		System.out.println("**********HELLO***********");
 		Application app = new Application();
 		app.runMenu();
-		app.save(filename);
+		app.save(db.getDB());
 		System.out.println("***********GOODBYE**********");
 	}
 }
