@@ -122,21 +122,25 @@ public class Kennel implements Serializable{
 	 *            The animal to remove
 	 */
 	public void removeAnimal(String who) {
+		// TODO RemoveAnimal
 		Animal which = null;
 		// Search for the dog by name
-		
+		which = search(who);
 		//TODO instanceof operator is considered to be bad OO-design, because it is not scalable
-		for (Animal d : animals) {
+		
+		/*for (Animal d : animals) {
 			if (who.equals(d.getName())) {
 				which = d;
 			}
-		}
+		}*/
+		
 		if (which != null) {
 			animals.remove(which); // Requires that Dog has an equals method
 			System.out.println("removed " + who);
 			nextFreeLocation = nextFreeLocation - 1;
-		} else
+		} else{
 			System.err.println("cannot remove - not in kennel");
+		}
 	}
 
 	/**
@@ -189,7 +193,14 @@ public class Kennel implements Serializable{
 	public Animal search(String name) {
 		//TODO Provide a search of animals
 		Animal result = null;
-
+		
+		for(Animal a: animals){
+			if(a.getName().equals(name)){
+				System.out.println("We found the pet:");
+				result = a;
+			}
+		}
+		
 		return result;
 	}
 

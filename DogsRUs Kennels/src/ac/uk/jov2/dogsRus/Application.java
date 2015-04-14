@@ -189,18 +189,18 @@ public class Application {
 	}
 
 	private void removeDog() {
-		System.out.println("which dog do you want to remove");
+		System.out.println("Which dog do you want to remove?");
 		String dogtoberemoved;
 		dogtoberemoved = scan.nextLine();
 		kennel.removeAnimal(dogtoberemoved);
 	}
 
 	private void searchForAnimal() {
-		System.out.println("which dog do you want to search for");
+		System.out.println("which Animal do you want to search for?");
 		String name = scan.nextLine();
-		Animal dog = kennel.search(name);
-		if (dog != null){
-			System.out.println(dog.toString());
+		Animal anim = kennel.search(name);
+		if (anim != null){
+			System.out.println(anim.toString());
 		} else {
 			System.out.println("Could not find dog: " + name);
 		}
