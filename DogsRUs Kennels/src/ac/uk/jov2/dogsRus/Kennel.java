@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import ac.uk.jov2.dogsRus.animals.Animal;
-import ac.uk.jov2.dogsRus.animals.Cat;
 import ac.uk.jov2.dogsRus.animals.Dog;
 
 /**
@@ -122,7 +121,6 @@ public class Kennel implements Serializable{
 	 *            The animal to remove
 	 */
 	public void removeAnimal(String who) {
-		// TODO RemoveAnimal
 		Animal which = null;
 		// Search for the dog by name
 		which = search(who);
@@ -159,11 +157,8 @@ public class Kennel implements Serializable{
 	 * @return An array of the correct size
 	 */
 	public Animal[] obtainAllAnimal() {
-		// TODO Return an array of all animals on the kennel
-		//FIXME the arrays are always null
-
-		System.out.println("T" + animals.toString());
-		Animal result[] = animals.toArray(new Animal[animals.size()]);
+		Animal[] result = new Animal[animals.size()];
+		result = animals.toArray(result);
 		return result;
 	}
 
@@ -172,26 +167,26 @@ public class Kennel implements Serializable{
 	 * @return An array of dogs of the correct size. If no dogs like bones then returns an empty array (size 0)
 	 */
 	public Animal[] obtainAnimalWhoLikeBones() {
-		//TODO Return dogs who like only bones
-		Animal[] result = new Animal[animals.size()];
-		result = animals.toArray(result);
+		
+		ArrayList<Animal> anims = new ArrayList<Animal>();
 		
 		for(Animal a: animals){
 			
 			if(a instanceof Dog) {
-				System.out.println("its a dog");
-			}else if(a instanceof Cat){
-				System.out.println("its a cat");
+				System.out.println(a.getName()+ "is a dog");
+				if(((Dog) a).getLikesBones() == true){
+					anims.add(a);
+				}
 			}
 		}
-
-		// Create a copy of the ArrayList and return as an array of the correct
-		// size
+		
+		Animal[] result = new Animal[anims.size()];
+		result = anims.toArray(result);
 		return result;
 	}
 
 	public Animal search(String name) {
-		//TODO Provide a search of animals
+
 		Animal result = null;
 		
 		for(Animal a: animals){
@@ -200,9 +195,7 @@ public class Kennel implements Serializable{
 				result = a;
 			}
 		}
-		
 		return result;
 	}
 
-	
 }

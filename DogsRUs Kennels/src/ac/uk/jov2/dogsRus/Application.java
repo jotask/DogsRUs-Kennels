@@ -80,27 +80,46 @@ public class Application {
 		fav = scan.nextLine();
 		System.out.println("How many times is he/she fed a day? (as a number)");
 		int numTimes;
-		numTimes = scan.nextInt(); // This can be improved (InputMismatchException?)
+		numTimes = askForInt();
 		scan.nextLine();
 		Dog dog = new Dog(name, owners, lb, fav, numTimes);
 		kennel.addAnimal(dog);
-		
 	}
 
 	private void addCat() {
 		System.out.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
 		String name = scan.nextLine();
 		ArrayList<Owner> owners = getOwners();
-		System.out.println("Does he like bones? (Y/N)");
 		System.out.println("What is his/her favourite food?");
 		String fav;
 		fav = scan.nextLine();
 		System.out.println("How many times is he/she fed a day? (as a number)");
 		int numTimes;
-		numTimes = scan.nextInt(); // This can be improved (InputMismatchException?)
+		numTimes = askForInt();
 		scan.nextLine();
 		Cat cat = new Cat(name, owners, fav, numTimes);
 		kennel.addAnimal(cat);
+		
+	}
+	
+	private int askForInt(){
+		
+		int r = -1;
+		boolean canExit = false;
+		
+		do{
+			try {
+				r = scan.nextInt();
+			} catch (Exception e) {
+				System.out.println("Is not a number. Please enter a valid number");
+				scan.next();
+			}
+			if(r != -1){
+				canExit = true;
+			}
+		}while(!canExit);
+		
+		return r;
 		
 	}
 
@@ -152,12 +171,9 @@ public class Application {
 
 	private void displayAllAnimals() {
 		Animal[] allAnimals = kennel.obtainAllAnimal();
-		
-		//System.out.println("Length: " + allAnimals.length);
-				
+						
 		for (Animal anim : allAnimals){
 			System.out.println(anim);
-			
 		}
 		
 	}
