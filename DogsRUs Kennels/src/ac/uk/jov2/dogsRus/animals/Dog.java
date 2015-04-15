@@ -9,8 +9,6 @@ import ac.uk.jov2.dogsRus.Owner;
  * @version 1.0 (16th March 2015)
  */
 public class Dog extends Animal{
-
-	private static final long serialVersionUID = 8859045667757662983L;
 	
 	private boolean likesBones;
 

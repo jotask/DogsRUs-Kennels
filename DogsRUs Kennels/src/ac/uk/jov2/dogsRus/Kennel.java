@@ -1,6 +1,5 @@
 package ac.uk.jov2.dogsRus;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import ac.uk.jov2.dogsRus.animals.Animal;
@@ -8,15 +7,15 @@ import ac.uk.jov2.dogsRus.animals.Dog;
 
 /**
  * 
- * To model a Kennel - a collection of dogs
+ * To model a Kennel - a collection of animals
  * 
  * @author Chris Loftus
  * @version 1.0 (16th March 2015)
  *
  */
-public class Kennel implements Serializable{
+public class Kennel{
 
-	private static final long serialVersionUID = 7367152353302086211L;
+	private static int id;
 	private String name;
 	private ArrayList<Animal> animals;
 	private int nextFreeLocation;
@@ -24,12 +23,14 @@ public class Kennel implements Serializable{
 
 	/**
 	 * Creates a kennel with a default size 20
+	 * @param s 
+	 * @param n2 
 	 * 
 	 * @param maxNoAnimals
 	 *            The capacity of the kennel
 	 */
 	public Kennel(){
-		this(20);
+		this("defaultName", 20);
 	}
 	
 	/**
@@ -38,9 +39,10 @@ public class Kennel implements Serializable{
 	 * @param maxNoDogs
 	 *            The capacity of the kennel
 	 */
-	public Kennel(int maxNoAnimal) {
+	public Kennel(String n, int maxNoAnimal) {
 		nextFreeLocation = 0; // no Dogs in collection at start
 		capacity = maxNoAnimal;
+		name= n;
 		animals = new ArrayList<Animal>(capacity); // set up default. This can
 												// actually be exceeded
 												// when using ArrayList but we
@@ -196,6 +198,20 @@ public class Kennel implements Serializable{
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public static int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public static void setId(int i) {
+		id = i;
 	}
 
 }

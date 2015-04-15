@@ -1,16 +1,14 @@
 package ac.uk.jov2.dogsRus;
 
-import java.io.Serializable;
-
 /**
  * 
  * @author Lynda Thomas and Chris Loftus
  * @version 1.0 (March 19th 2015)
  *
  */
-public class Owner implements Serializable{
+public class Owner{
 
-	private static final long serialVersionUID = -1650996327202128911L;
+	private static int id = -1;
 	private String name;
 	private String phone;
 	
@@ -60,6 +58,21 @@ public class Owner implements Serializable{
 	@Override
 	public String toString() {
 		return name + " " + phone;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	public static void setId(int i) {
+		if(id == -1){
+			id = i;
+		}else{
+			System.err.println("Sorry but you can't change the ID");
+		}
 	}
 
 }

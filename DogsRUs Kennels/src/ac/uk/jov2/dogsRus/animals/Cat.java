@@ -10,8 +10,6 @@ import ac.uk.jov2.dogsRus.Owner;
  */
 public class Cat extends Animal{
 
-	private static final long serialVersionUID = 2304866428860873200L;
-
 	/**
 	 * Constructor for the cat
 	 * @param name The cat's name

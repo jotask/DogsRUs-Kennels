@@ -1,13 +1,12 @@
 package ac.uk.jov2.dogsRus.animals;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import ac.uk.jov2.dogsRus.Owner;
 
 
-public class Animal implements Serializable{
+public class Animal {
 	
-	private static final long serialVersionUID = 2364837888974161274L;
+	private static int id = -1;
 	
 	public String name;
 	public ArrayList<Owner> originalOwners;
@@ -116,6 +115,21 @@ public class Animal implements Serializable{
 		return "Animal [name=" + name + ", originalOwners=" + originalOwners
 				+ ", favFood=" + favFood + ", foodPerDay=" + foodPerDay
 				+ ", canShareRun=" + canShareRun + "]";
+	}
+
+	/**
+	 * @return the id
+	 */
+	public static int getId() {
+		return id;
+	}
+
+	public void setId(int i) {
+		if(id == -1){
+			id = i;
+		}else{
+			System.err.println("Sorry but you can't change the ID");
+		}
 	}
 
 }

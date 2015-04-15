@@ -1,16 +1,12 @@
 package ac.uk.jov2.dogsRus;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import ac.uk.jov2.dogsRus.animals.Animal;
 import ac.uk.jov2.dogsRus.animals.Cat;
 import ac.uk.jov2.dogsRus.animals.Dog;
+import ac.uk.jov2.dogsRus.database.DataBase;
 
 /**
  * This class runs a Kennel
@@ -29,6 +25,7 @@ public class Application {
 	 * is in this class. We don't want this class to be used by any other class.
 	 */
 	private Application() {
+		db = new DataBase();
 		scan = new Scanner(System.in);
 		chooseKennel();
 	}
@@ -38,7 +35,6 @@ public class Application {
 		//filename = scan.next();
 		db = new DataBase();
 		kennel = new Kennel();
-		load(db.getDB());	
 	}
 	
 	private void addAnimal(){
@@ -160,7 +156,6 @@ public class Application {
 				printAll();
 			    break;
 			case "9":
-				save(db.getDB());
 				chooseKennel();
 			    break;
 			case "Q":
@@ -259,44 +254,12 @@ public class Application {
 		System.out.println("q - Quit");
 	}
 
-   private void save(String db){
-	   System.out.println("SaveIt");
-       try{
-         FileOutputStream fos= new FileOutputStream(db);
-         ObjectOutputStream oos= new ObjectOutputStream(fos);
-         oos.writeObject(kennel);
-         oos.close();
-         fos.close();
-       }catch(IOException ioe){
-            ioe.printStackTrace();
-        }
-   }
-
-   private void load(String db){
-	   Kennel k;
-       try{
-           FileInputStream fis = new FileInputStream(db);
-           ObjectInputStream ois = new ObjectInputStream(fis);
-           k = (Kennel) ois.readObject();
-           ois.close();
-           fis.close();
-        }catch(IOException ioe){
-            ioe.printStackTrace();
-            return;
-         }catch(ClassNotFoundException c){
-            System.out.println("Class not found");
-            c.printStackTrace();
-            return;
-         }
-       kennel = k;
-   }
-
 	// /////////////////////////////////////////////////
 	public static void main(String args[]) {
 		System.out.println("**********HELLO***********");
 		Application app = new Application();
 		app.runMenu();
-		app.save(db.getDB());
+		db.shutdown();
 		System.out.println("***********GOODBYE**********");
 	}
 }
