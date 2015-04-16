@@ -11,27 +11,27 @@ public class CreateDB {
 	
 	public CreateDB(){
 
+		DataBaseUtil.loadDriver();
+		
 		try {
-			Class.forName(DataBase.DRIVER);
-			conn = DriverManager.getConnection(DataBase.URL + DataBase.db_file_name_prefix);
-			createTables();
-			System.out.println("Creating a DB");
+			conn = DriverManager.getConnection(DataBaseUtil.URL + DataBaseUtil.DB_FILE);
 		} catch (SQLException e) {
-			System.out.println("SQLException. CreateDB.12");
-		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.err.println("Error on Driver. Class not Found Exception");
 			return;
 		}
+		
+		createTables();
+		
 	}
 	
 	private void createTables(){
 		String sql;
-		sql = "CREATE TABLE kennel ( id INTEGER IDENTITY, name VARCHAR(256), size INTEGER)";
+		sql = "CREATE TABLE \"kennel\" ( id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, name VARCHAR(256), size INTEGER);";
 		update(sql);
-		sql = "CREATE TABLE owner ( id INTEGER IDENTITY, id_animal INTEGER, name VARCHAR(256), telephone INTEGER)";
+		sql = "CREATE TABLE \"owner\" ( id INTEGER IDENTITY, id_animal INTEGER, name VARCHAR(256), phone INTEGER);";
 		update(sql);
-		sql = "CREATE TABLE animal ( id INTEGER IDENTITY, id_kennel INTEGER, type VARCHAR(256), name VARCHAR(256))";
+		sql = "CREATE TABLE \"animal\" ( id INTEGER IDENTITY, id_kennel INTEGER, type VARCHAR(256), name VARCHAR(256));";
 		update(sql);
 	}
 	
@@ -48,6 +48,6 @@ public class CreateDB {
 		} catch (SQLException ex3) {
 			ex3.printStackTrace();
 		}
-	} // void update()
+	}
 
 }

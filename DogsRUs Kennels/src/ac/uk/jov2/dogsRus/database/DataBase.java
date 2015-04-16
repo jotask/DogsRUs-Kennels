@@ -17,32 +17,83 @@ public class DataBase extends DataBaseUtil{
 	}
 	
 	public void insertOwner(Owner own){
+		openConnection();
 		String sql;
 		sql = "INSERT INTO owner(id_animal, name,telephone) VALUES(1," + own.getName() + ", " + own.getPhone() + ")";
 		update(sql);
 	}
 	
 	public void insertKennel(Kennel k){
+		openConnection();
 		String sql;
-		sql = "INSERT INTO kennel(name,size) VALUES(" + k.getName() + ", " + k.getCapacity() + ")";
+		sql = "INSERT INTO \"kennel\" (name,size) VALUES ('" + k.getName() + "', '" + k.getCapacity() + "');";
+		update(sql);
+	}
+	
+	public void deleteKennel(int id){
+		openConnection();
+		String sql;
+		sql = "DELETE FROM \"kennel\" WHERE id='"+ id +"';";
 		update(sql);
 	}
 	
 	public void insertAnimal(Animal a, int id_kennel){
+		openConnection();
 		String sql;
 		sql = "INSERT INTO animal(kennel, type, name) VALUES(" + id_kennel + ", " + a.getClass().getSimpleName() + ", " + a.getName() + ")";
 		update(sql);
 	}
 	
 	public Kennel getKennel(int id){
+		openConnection();
 		Kennel k = null;
 		String sql;
-		sql = "SELECT * from kennel WHERE id=" + id + ";";
+		sql = "SELECT * from \"kennel\" WHERE id='" + id + "';";
 		ResultSet r = query(sql);
 		try {
-			String name = r.getString("name");
+			r.next();
+			int i = Integer.parseInt(r.getString("id"));
+			String n = r.getString("name");
 			int size = Integer.parseInt(r.getString("size"));
-			k = new Kennel(name, size);
+			k = new Kennel(i, n, size);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return k;
+	}
+	
+	public int knowID(String table, String name){
+		
+		String sql;
+		sql = "SELECT id from \"" + table + "\" WHERE name='" + name + "';";
+		ResultSet rs = query(sql);
+		
+		int r = -1;
+		
+		try {
+			r = Integer.parseInt(rs.getString("id"));
+		} catch (NumberFormatException | SQLException e) {
+			System.err.println("Error trying to know the ID in the table " + table + " on the name field: " + name);
+		}
+		
+		return r;
+	}
+	
+	public ArrayList<Kennel> allKennels(){
+		openConnection();
+		ArrayList<Kennel> k = new ArrayList<Kennel>();
+		String sql;
+		sql = "SELECT * from \"kennel\";";
+		ResultSet r = query(sql);
+		
+		try {
+			while(r.next()){
+				int id = Integer.parseInt(r.getString("id"));
+				String name = r.getString("name");
+				int size = Integer.parseInt(r.getString("size"));
+				Kennel tmp = new Kennel(id, name, size);
+				k.add(tmp);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -50,8 +101,9 @@ public class DataBase extends DataBaseUtil{
 	}
 	
 	public Animal searchPet(int idKennel,  String name){
+		openConnection();
 		String sql;
-		sql = "SELECT id from animal WHERE id_kennel=" + idKennel + "AND name="+name+";";
+		sql = "SELECT id from \"animal\" WHERE id_kennel=" + idKennel + "AND name="+name+";";
 		ResultSet r = query(sql);
 		
 		Animal result = null;
@@ -65,6 +117,7 @@ public class DataBase extends DataBaseUtil{
 	}
 	
 	private Animal createAnimal(int ido) {
+		openConnection();
 		String sql;
 		sql = "SELECT * from animal WHERE id=" + ido + ";";
 		ResultSet r = query(sql);
@@ -101,6 +154,7 @@ public class DataBase extends DataBaseUtil{
 	}
 
 	public Animal[] obtainAllAnimalsInKennel(int idKennel){
+		openConnection();
 		ArrayList<Animal> anims = new ArrayList<Animal>();
 		
 		String sql;

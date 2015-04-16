@@ -30,11 +30,130 @@ public class Application {
 		chooseKennel();
 	}
 	
-	private void chooseKennel() {
-		//System.out.print("Please enter the filename of kennel information: ");
-		//filename = scan.next();
-		db = new DataBase();
-		kennel = new Kennel();
+	private void kennelMenu(ArrayList<Kennel> k){
+		if(!k.isEmpty()){
+			for(Kennel tmp: k){
+				if(tmp.getId() == -1){
+					// If is -1 the id is corrupted because is the default ID for kennel
+					System.err.print(tmp.getName() + "	");
+				}else{
+					System.out.print(tmp.getName() + "	");
+				}
+			}
+			System.out.println();
+			System.out.println("Type create for create a new Kennel");
+			System.out.println("Type delete for create a new Kennel");
+			System.out.println("Enter the name of a Kennel for select them or any option:");
+		}else{
+			System.out.println("Not kennels stored, Let's to create a new one for start using the program!");
+			createKennel(k);
+		}
+	}
+	
+	private void chooseKennel(){
+		System.out.println("------------------------------------------------------");
+		ArrayList<Kennel> k = new ArrayList<Kennel>();
+		k = db.allKennels();
+		
+		String response;
+		boolean correct = false;
+		
+		do{
+			kennelMenu(k);
+			scan = new Scanner(System.in);
+			response = scan.nextLine().toLowerCase();
+			if(response.equals("create")){
+				createKennel(k);
+			}else if(response.equals("delete")){
+				deleteKennel(k);
+			}else{
+				for(Kennel tmp: k){
+					if(tmp.getName().toLowerCase().equals(response)){
+						selectKennel(tmp.getId());
+						correct = true;
+					}
+				}
+				if(correct == false){
+					System.out.println("Sorry but " + response + " doesn't exist, please enter again the kennel name you want!");
+				}
+			}
+		}while(!correct);
+	}
+	
+	private void createKennel(ArrayList<Kennel> k){
+		// FIXME When is created a kennel you can't choose that kennel created. You need to close and open the program for selectd that kennel
+		String name;
+		boolean correct = false;
+		do{
+			boolean nameCorrect = false;
+			do{
+				System.out.println("Type the name for the new kennel:");
+				name = scan.nextLine();
+				if(name.toLowerCase().equals("create") || name.toLowerCase().equals("delete")){
+					// Check if the input is not any reserved word
+					System.out.println("The words \"create\" and \"delete\" are words reserved. Please use another name");
+				}else{
+					nameCorrect = true;
+				}
+			}while(!nameCorrect);
+			
+			// Check if the selected name for the kennel exist
+			boolean exist = false;
+			for(Kennel tmp: k){
+				if(tmp.getName().toLowerCase().equals(name.toLowerCase())){
+					exist = true;
+				}
+			}
+			
+			if(!exist){
+				System.out.println("Enter the size of the new Kennel");
+				int s = askForInt();
+				Kennel tmpK = new Kennel(name, s);
+				db.insertKennel(tmpK);
+				correct = true;
+			}else{
+				System.out.println("Sorry but this name already exist on the DataBase. Please insert a different name for the kennel.");
+			}
+			
+		}while(!correct);
+		
+		chooseKennel();
+	}
+	
+	private void deleteKennel(ArrayList<Kennel> k){
+
+		String response;
+		boolean correct = false;
+		do{
+			System.out.println("Type \"exit\" for back to menu:");
+			System.out.println("Type the name of the kennel you want:");
+			scan = new Scanner(System.in);
+			response = scan.nextLine().toLowerCase();
+			
+			if(!response.equals("exit")){
+				// Check if the selected name for the kennel exist
+				for(Kennel tmp: k){
+					if(tmp.getName().toLowerCase().equals(response)){
+						db.deleteKennel(tmp.getId());
+						correct = true;
+					}
+				}
+				
+				if(correct == false){
+					System.out.println("Sorry but this kennel doesn't exist on the DataBase. Please enter again");
+				}
+			}else{
+				correct = true;
+			}
+			
+		}while(!correct);
+		
+		chooseKennel();
+		
+	}
+	
+	private void selectKennel(int id){
+		kennel = db.getKennel(id);
 	}
 	
 	private void addAnimal(){
@@ -155,9 +274,6 @@ public class Application {
 			case "8":
 				printAll();
 			    break;
-			case "9":
-				chooseKennel();
-			    break;
 			case "Q":
 				break;
 			default:
@@ -194,9 +310,6 @@ public class Application {
 		}
 	}
 
-	/*
-	 * printAll() method runs from the main and prints status
-	 */
 	private void printAll() {
 		System.out.println(kennel);
 	}

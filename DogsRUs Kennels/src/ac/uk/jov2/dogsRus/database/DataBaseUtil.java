@@ -1,36 +1,6 @@
-/* Copyright (c) 2001-2005, The HSQL Development Group
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * Neither the name of the HSQL Development Group nor the names of its
- * contributors may be used to endorse or promote products derived from this
- * software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL HSQL DEVELOPMENT GROUP, HSQLDB.ORG,
- * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package ac.uk.jov2.dogsRus.database;
 
-import java.io.File;
+//import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -48,16 +18,21 @@ import java.sql.Statement;
  * Author: Karl Meissner karl@meissnersd.com
  */
 public class DataBaseUtil {
+	
+	//Connection c = DriverManager.getConnection("jdbc:hsqldb:file:testdb", "sa", "");
 
 	Connection conn; // our connnection to the db - presist for life of program
-	static String db_file_name_prefix = "dogsRus";
+	
+	static String DB_FILE = "dogsRus";
 
 	static final String DRIVER = "org.hsqldb.jdbcDriver";
-	static final String URL = "jdbc:hsqldb:";
+	static final String PATH = "db\\";
+	static final String URL = "jdbc:hsqldb:file:" + PATH;
+	
 
-	// we dont want this garbage collected until we are done
 	public DataBaseUtil(){
-		deleteDB();
+		// TODO delete deleteDB method
+		//deleteDB();
 		// Load the HSQL Database Engine JDBC driver
 		// hsqldb.jar should be in the class path or made part of the current
 		// jar
@@ -70,42 +45,48 @@ public class DataBaseUtil {
 		// of the db.
 		// It can contain directory names relative to the
 		// current working directory
-					
+		
+		loadDriver();
+		
 		try {
 			createConnection();
 		} catch (SQLException | org.hsqldb.HsqlException e) {
-			//e.printStackTrace();
 			System.out.println("Not exist the DataBase. Creating a new one.");
 			new CreateDB();
-		} catch (ClassNotFoundException e) {
-			//e.printStackTrace();
-			System.err.println("Error on Driver. Class not Found Exception");
-			return;
 		}finally{
 			try {
 				createConnection();
-			} catch (ClassNotFoundException | SQLException | org.hsqldb.HsqlException e) {
+			} catch ( SQLException | org.hsqldb.HsqlException e) {
 				e.printStackTrace();
 				System.out.println("Some big error ocurred. Please contact me: jov2@aber.ac.uk");
 				return;
 			}
 		}
 	}
-	
-	private void deleteDB(){
+
+	static void loadDriver() {
 		try {
-			File f1 = new File(db_file_name_prefix+".properties");
-			f1.delete();
-			File f2 =  new File(db_file_name_prefix+".script");
-			f2.delete();
-		} catch (Exception e) {
-			System.out.println("Error deleting files");
+			Class.forName(DRIVER);
+		}
+		catch (Exception e) {
+			System.out.println("Problem loading JDBC driver: " + e);
+			throw new IllegalStateException("HSQLDB driver couldn't be loadded.");
 		}
 	}
 	
-	private void createConnection() throws ClassNotFoundException, SQLException, org.hsqldb.HsqlException{
-		Class.forName(DRIVER);
-		conn = DriverManager.getConnection(URL + db_file_name_prefix +";ifexists=true");
+//	private void deleteDB(){
+//		try {
+//			File f1 = new File(DB_FILE+".properties");
+//			f1.delete();
+//			File f2 =  new File(DB_FILE+".script");
+//			f2.delete();
+//		} catch (Exception e) {
+//			System.err.println("Error deleting files");
+//		}
+//	}
+	
+	void createConnection() throws SQLException, org.hsqldb.HsqlException{
+		conn = DriverManager.getConnection(URL + DB_FILE +";ifexists=true");
 	}
 
 	public void shutdown(){
@@ -144,6 +125,7 @@ public class DataBaseUtil {
 		} catch (SQLException ex3) {
 			ex3.printStackTrace();
 		}
+		closeConnection();
 		return rs;
 	}
 
@@ -164,7 +146,8 @@ public class DataBaseUtil {
 		} catch (SQLException ex3) {
 			ex3.printStackTrace();
 		}
-	} // void update()
+		closeConnection();
+	}
 
 	public static void dump(ResultSet rs) throws SQLException {
 
@@ -189,6 +172,30 @@ public class DataBaseUtil {
 			}
 
 			System.out.println(" ");
+		}
+	}
+	
+	protected void openConnection(){
+		try {
+			Class.forName(DRIVER);
+			conn = DriverManager.getConnection(URL + DB_FILE +"");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Error trying to connect to the database");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("Driver not found");
+		}
+	}
+	private void closeConnection(){
+		Statement sql;
+		try {
+			sql = conn.createStatement();
+			sql.execute("SHUTDOWN");
+			sql.close();
+		} catch (SQLException e) {
+			System.err.println("Error trying close the connection. DataBaseUtil.199");
 		}
 	}
 }

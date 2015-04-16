@@ -15,7 +15,7 @@ import ac.uk.jov2.dogsRus.animals.Dog;
  */
 public class Kennel{
 
-	private static int id;
+	private static int id = -1;
 	private String name;
 	private ArrayList<Animal> animals;
 	private int nextFreeLocation;
@@ -30,18 +30,24 @@ public class Kennel{
 	 *            The capacity of the kennel
 	 */
 	public Kennel(){
-		this("defaultName", 20);
+		this(-1, "defaultName", 20);
+	}
+	
+	public Kennel(String n, int maxNoAnim) {
+		this(-1, n, maxNoAnim);
 	}
 	
 	/**
 	 * Create a kennel
 	 * 
-	 * @param maxNoDogs
+	 * @param maxNoAnim
 	 *            The capacity of the kennel
 	 */
-	public Kennel(String n, int maxNoAnimal) {
-		nextFreeLocation = 0; // no Dogs in collection at start
-		capacity = maxNoAnimal;
+	public Kennel(int i, String n, int maxNoAnim) {
+
+		id = i;
+		nextFreeLocation = 0;
+		capacity = maxNoAnim;
 		name= n;
 		animals = new ArrayList<Animal>(capacity); // set up default. This can
 												// actually be exceeded
@@ -147,7 +153,7 @@ public class Kennel{
 	 * @return String showing all the information in the kennel
 	 */
 	public String toString() {
-		String results = "Kennel with name: " + name + " with a capacity of: " + capacity + " animals contain:\n";
+		String results = "Kennel with id: " + id + " and name: " + name + " with a capacity of: " + capacity + " animals contain:\n";
 		for (Animal d : animals) {
 			results = results + d.toString() + "\n";
 		}
@@ -203,7 +209,7 @@ public class Kennel{
 	/**
 	 * @return the id
 	 */
-	public static int getId() {
+	public int getId() {
 		return id;
 	}
 
