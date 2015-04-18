@@ -67,7 +67,7 @@ public class Owner{
 		return id;
 	}
 
-	public static void setId(int i) {
+	public void setId(int i) {
 		if(id == -1){
 			id = i;
 		}else{

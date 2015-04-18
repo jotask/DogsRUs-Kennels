@@ -10,6 +10,8 @@ import ac.uk.jov2.dogsRus.Owner;
  */
 public class Cat extends Animal{
 
+	private boolean needPetting;
+	
 	/**
 	 * Constructor for the cat
 	 * @param name The cat's name
@@ -18,17 +20,17 @@ public class Cat extends Animal{
 	 * @param food The kind of food it eats
 	 * @param mealsPerDay Number of feeds per day 
 	 */
-	public Cat(String name, ArrayList<Owner> owners, String food, int mealsPerDay) {
-		super(name, owners, food, mealsPerDay);
-				
+	public Cat(String name, ArrayList<Owner> owners, String food, int mealsPerDay, boolean canShareRun, boolean nP) {
+		super(name, owners, food, mealsPerDay, canShareRun);
+		needPetting = nP;
 	}
 
 	/**
 	 * A basic implementation to just return all the data in string form
 	 */
 	public String toString() {
-		return "Cat name:" + name + "Original Owner:" + originalOwners + "Favfood:" + favFood
-				+ "FoodPerDay:" + foodPerDay;
+		return "It's a Cat with name: " + name + ", Original Owner/s: " + originalOwners + ", Favfood: " + favFood
+				+ ", FoodPerDay: " + foodPerDay + ", Need Petting: " + needPetting;
 	}
 
 }

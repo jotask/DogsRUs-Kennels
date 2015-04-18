@@ -21,8 +21,9 @@ public class Animal {
 	 * @param owners A list of original owners: a copy is made
 	 * @param food The kind of food it eats
 	 * @param mealsPerDay Number of feeds per day 
+	 * @param cSRun 
 	 */
-	public Animal(String n, ArrayList<Owner> owners, String food, int mealsPerDay){
+	public Animal(String n, ArrayList<Owner> owners, String food, int mealsPerDay, boolean cSRun){
 
 		name = n;
 		originalOwners = new ArrayList<Owner>();
@@ -37,6 +38,7 @@ public class Animal {
 		
 		favFood = food;
 		foodPerDay = mealsPerDay;
+		canShareRun = cSRun;
 		
 	}
 

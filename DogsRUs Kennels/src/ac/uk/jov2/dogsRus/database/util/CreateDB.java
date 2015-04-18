@@ -1,23 +1,22 @@
-package ac.uk.jov2.dogsRus.database;
+package ac.uk.jov2.dogsRus.database.util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-public class CreateDB {
+public class CreateDB{
 	
 	Connection conn;
 	
+	// TODO
+	
+	/*
 	public CreateDB(){
 
-		DataBaseUtil.loadDriver();
+		DbUtil.loadDriver();
 		
 		try {
 			conn = DriverManager.getConnection(DataBaseUtil.URL + DataBaseUtil.DB_FILE);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Exception errorcode: " + e.getErrorCode() + " " + e);
 			return;
 		}
 		
@@ -29,9 +28,9 @@ public class CreateDB {
 		String sql;
 		sql = "CREATE TABLE \"kennel\" ( id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, name VARCHAR(256), size INTEGER);";
 		update(sql);
-		sql = "CREATE TABLE \"owner\" ( id INTEGER IDENTITY, id_animal INTEGER, name VARCHAR(256), phone INTEGER);";
+		sql = "CREATE TABLE \"owner\" ( id INTEGER IDENTITY, id_animal INTEGER, name VARCHAR(256), phone VARCHAR(25));";
 		update(sql);
-		sql = "CREATE TABLE \"animal\" ( id INTEGER IDENTITY, id_kennel INTEGER, type VARCHAR(256), name VARCHAR(256));";
+		sql = "CREATE TABLE \"animal\" ( id INTEGER IDENTITY, id_kennel INTEGER, type VARCHAR(256), name VARCHAR(256), favFood VARCHAR(256), foodPerDay VARCHAR(256), canShareRun BOOLEAN, needTakeToWalk BOOLEAN, likeBones BOOLEAN, needsPetting BOOLEAN);";
 		update(sql);
 	}
 	
@@ -49,5 +48,5 @@ public class CreateDB {
 			ex3.printStackTrace();
 		}
 	}
-
+*/
 }

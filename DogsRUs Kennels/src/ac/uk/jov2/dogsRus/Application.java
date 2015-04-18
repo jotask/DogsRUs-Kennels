@@ -6,7 +6,6 @@ import java.util.Scanner;
 import ac.uk.jov2.dogsRus.animals.Animal;
 import ac.uk.jov2.dogsRus.animals.Cat;
 import ac.uk.jov2.dogsRus.animals.Dog;
-import ac.uk.jov2.dogsRus.database.DataBase;
 
 /**
  * This class runs a Kennel
@@ -18,19 +17,18 @@ public class Application {
 
 	private static Kennel kennel; // holds the kennel
 	private Scanner scan; // so we can read from keyboard
-	private static DataBase db;
 
 	/*
 	 * Notice how we can make this private, since we only call from main which
 	 * is in this class. We don't want this class to be used by any other class.
 	 */
 	private Application() {
-		db = new DataBase();
 		scan = new Scanner(System.in);
 		chooseKennel();
 	}
 	
 	private void kennelMenu(ArrayList<Kennel> k){
+		System.out.println("------------------------------------------------------");
 		if(!k.isEmpty()){
 			for(Kennel tmp: k){
 				if(tmp.getId() == -1){
@@ -46,26 +44,47 @@ public class Application {
 			System.out.println("Enter the name of a Kennel for select them or any option:");
 		}else{
 			System.out.println("Not kennels stored, Let's to create a new one for start using the program!");
-			createKennel(k);
+			System.out.println("Type create for create a new Kennel");
 		}
 	}
 	
+	private boolean confirm(){
+		boolean r = false;
+		
+		System.out.println("Are you sure you want do this action? Y/N");
+		String tmp = scan.nextLine();
+		if(tmp.toLowerCase().equals("y")){
+			r = true;
+		}
+		
+		return r;
+	}
+	
 	private void chooseKennel(){
-		System.out.println("------------------------------------------------------");
 		ArrayList<Kennel> k = new ArrayList<Kennel>();
 		k = db.allKennels();
 		
 		String response;
 		boolean correct = false;
 		
-		do{
+		runChoose: do{
 			kennelMenu(k);
 			scan = new Scanner(System.in);
 			response = scan.nextLine().toLowerCase();
 			if(response.equals("create")){
 				createKennel(k);
+				// Just for renew all the ArrayList adding the new kennel.
+				//Because in this way I can know the unique ID for the new Kennel we just generate
+				k = db.allKennels();
+				// And restart the loop
+				continue runChoose;
 			}else if(response.equals("delete")){
 				deleteKennel(k);
+				// Just for renew all the ArrayList adding the new kennel.
+				//Because in this way I can know the unique ID for the new Kennel we just generate
+				k = db.allKennels();
+				// And restart the loop
+				continue runChoose;
 			}else{
 				for(Kennel tmp: k){
 					if(tmp.getName().toLowerCase().equals(response)){
@@ -81,7 +100,6 @@ public class Application {
 	}
 	
 	private void createKennel(ArrayList<Kennel> k){
-		// FIXME When is created a kennel you can't choose that kennel created. You need to close and open the program for selectd that kennel
 		String name;
 		boolean correct = false;
 		do{
@@ -91,7 +109,7 @@ public class Application {
 				name = scan.nextLine();
 				if(name.toLowerCase().equals("create") || name.toLowerCase().equals("delete")){
 					// Check if the input is not any reserved word
-					System.out.println("The words \"create\" and \"delete\" are words reserved. Please use another name");
+					System.out.println("The words \"create\" and \"delete\" are words reserved. Please use another name for the kennel");
 				}else{
 					nameCorrect = true;
 				}
@@ -116,8 +134,6 @@ public class Application {
 			}
 			
 		}while(!correct);
-		
-		chooseKennel();
 	}
 	
 	private void deleteKennel(ArrayList<Kennel> k){
@@ -134,8 +150,10 @@ public class Application {
 				// Check if the selected name for the kennel exist
 				for(Kennel tmp: k){
 					if(tmp.getName().toLowerCase().equals(response)){
-						db.deleteKennel(tmp.getId());
-						correct = true;
+						if(confirm()){
+							db.deleteKennel(tmp.getId());
+							correct = true;
+						}
 					}
 				}
 				
@@ -147,13 +165,15 @@ public class Application {
 			}
 			
 		}while(!correct);
-		
-		chooseKennel();
-		
 	}
 	
 	private void selectKennel(int id){
-		kennel = db.getKennel(id);
+		if(id != -1){
+			kennel = db.getKennel(id);
+		}else{
+			System.err.println("Sorry but this kennel is corrupted!");
+		}
+		
 	}
 	
 	private void addAnimal(){
@@ -167,10 +187,10 @@ public class Application {
 			response = scan.nextLine().toUpperCase();
 			switch (response) {
 			case "1":
-				addDog();
+				createDog();
 				break;
 			case "2":
-				addCat();;
+				createCat();;
 				break;
 			case "Q":
 				break;
@@ -180,7 +200,7 @@ public class Application {
 		} while (!(response.equals("Q")));
 	}
 
-	private void addDog() {
+	private void createDog() {
 		boolean lb = false;
 		System.out.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
 		String name = scan.nextLine();
@@ -199,10 +219,10 @@ public class Application {
 		numTimes = askForInt();
 		scan.nextLine();
 		Dog dog = new Dog(name, owners, lb, fav, numTimes);
-		kennel.addAnimal(dog);
+		db.addAnimal(dog);
 	}
 
-	private void addCat() {
+	private void createCat() {
 		System.out.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
 		String name = scan.nextLine();
 		ArrayList<Owner> owners = getOwners();
@@ -214,8 +234,7 @@ public class Application {
 		numTimes = askForInt();
 		scan.nextLine();
 		Cat cat = new Cat(name, owners, fav, numTimes);
-		kennel.addAnimal(cat);
-		
+		db.addAnimal(cat);
 	}
 	
 	private int askForInt(){
@@ -269,10 +288,10 @@ public class Application {
 				setKennelCapacity();
 			    break;
 			case "7":
-				displayAllAnimals();
+				printKennel();
 			    break;
 			case "8":
-				printAll();
+				chooseKennel();
 			    break;
 			case "Q":
 				break;
@@ -282,20 +301,10 @@ public class Application {
 		} while (!(response.equals("Q")));
 	}
 
-	private void displayAllAnimals() {
-		Animal[] allAnimals = kennel.obtainAllAnimal();
-						
-		for (Animal anim : allAnimals){
-			System.out.println(anim);
-		}
-		
-	}
-
 	private void setKennelCapacity() {
-		System.out.print("Enter max number of dogs: ");
-		int max = scan.nextInt();
-		scan.nextLine();
-		kennel.setCapacity(max);
+		System.out.print("Enter max number of animals: ");
+		int max = askForInt();
+		kennel.setCapacity(db, max);		
 	}
 
 	private void printDogsWithBones() {
@@ -310,7 +319,7 @@ public class Application {
 		}
 	}
 
-	private void printAll() {
+	private void printKennel() {
 		System.out.println(kennel);
 	}
 
@@ -318,13 +327,13 @@ public class Application {
 		System.out.println("Which dog do you want to remove?");
 		String dogtoberemoved;
 		dogtoberemoved = scan.nextLine();
-		kennel.removeAnimal(dogtoberemoved);
+		kennel.removeAnimal(kennel.getId(),dogtoberemoved);
 	}
 
 	private void searchForAnimal() {
-		System.out.println("which Animal do you want to search for?");
+		System.out.println("Which Animal do you want to search?");
 		String name = scan.nextLine();
-		Animal anim = kennel.search(name);
+		Animal anim = kennel.search(kennel.getId(),name);
 		if (anim != null){
 			System.out.println(anim.toString());
 		} else {
@@ -335,7 +344,7 @@ public class Application {
 	private void changeKennelName() {
 		System.out.println("Enter the name for the kennel");
 		String name = scan.nextLine();
-		kennel.setName(name);
+		kennel.setName(db, name);
 	}
 
 	private ArrayList<Owner> getOwners() {
@@ -352,19 +361,23 @@ public class Application {
 		} while (!answer.equals("N"));
 		return owners;
 	}
+	
+	public static DataBase getDB(){
+		return db;
+	}
 
 	private void printMenu() {
+		// TODO Replace x for slash
 		System.out.println("---- " + kennel.getName() + " ----");
 		System.out.println("1 - Add a new Animal");
-		System.out.println("2 - set up Kennel name");
-		System.out.println("3 - print all dogs who like bones");
-		System.out.println("4 - search for a pet");
-		System.out.println("5 - remove a pet");
-		System.out.println("6 - set kennel capacity");
-		System.out.println("7 - display all animals");
-		System.out.println("8 - Print Kennel");
-		System.out.println("9 - change Kennel");
-		System.out.println("q - Quit");
+		System.out.println("2 x Set up Kennel name");
+		System.out.println("3 - Print all dogs who like bones");
+		System.out.println("4 - Search for a pet");
+		System.out.println("5 - Remove a pet");
+		System.out.println("6 x Set kennel capacity");
+		System.out.println("7 x Print Kennel");
+		System.out.println("8 x Change Kennel");
+		System.out.println("q x Quit");
 	}
 
 	// /////////////////////////////////////////////////

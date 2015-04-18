@@ -14,12 +14,11 @@ import ac.uk.jov2.dogsRus.animals.Dog;
  *
  */
 public class Kennel{
-
+	
 	private static int id = -1;
 	private String name;
-	private ArrayList<Animal> animals;
-	private int nextFreeLocation;
 	private int capacity;
+	private int numberAnimals;
 
 	/**
 	 * Creates a kennel with a default size 20
@@ -44,16 +43,9 @@ public class Kennel{
 	 *            The capacity of the kennel
 	 */
 	public Kennel(int i, String n, int maxNoAnim) {
-
 		id = i;
-		nextFreeLocation = 0;
 		capacity = maxNoAnim;
 		name= n;
-		animals = new ArrayList<Animal>(capacity); // set up default. This can
-												// actually be exceeded
-												// when using ArrayList but we
-												// won't allow that
-												// to happen.
 	}
 
 	/**
@@ -63,17 +55,25 @@ public class Kennel{
 	 * @param theName
 	 */
 	public void setName(String theName) {
+//		db.setKennelName(id, theName);
 		name = theName;
 	}
 	
 	/**
 	 * Set the size of the kennel
+	 * @param db 
 	 * @param capacity The max dogs we can house
 	 */
 	public void setCapacity(int cap){
 		// This should really check to see if we already have dogs
 		// in the kennel and reducing the capacity would lead to evictions!
-		capacity = cap;
+		
+//		int animalHave = db.knowAnimalsInKennel(id);
+		
+//		if(animalHave <= cap){
+//			capacity = cap;
+////			db.setKennelCapacity(id, cap);
+//		}
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class Kennel{
 	 * @return int Current number of dogs in the kennel
 	 */
 	public int getNumOfAnimals() {
-		return nextFreeLocation;
+		return numberAnimals;
 	}
 
 	/**
@@ -110,16 +110,16 @@ public class Kennel{
 	 *            A new dog to home
 	 */
 	public void addAnimal(Animal theAnimal) {
-		if (nextFreeLocation >= capacity) {
+		if (numberAnimals >= capacity) {
 			System.out.println("Sorry kennel is full - cannot add team");
 			return;
 		}
 		// we add in the position indexed by nextFreeLocation
 		// This starts at zero
-		animals.add(theAnimal);
+//		animals.add(theAnimal);
 
 		// now increment index ready for next one
-		nextFreeLocation = nextFreeLocation + 1;
+		numberAnimals = numberAnimals + 1;
 	}
 
 	/**
@@ -128,10 +128,13 @@ public class Kennel{
 	 * @param theAnimal
 	 *            The animal to remove
 	 */
-	public void removeAnimal(String who) {
+	public void removeAnimal(int idKennel, String who) {
+		
 		Animal which = null;
-		// Search for the dog by name
-		which = search(who);
+		
+		// Search for the Animal by name
+		which = search(idKennel, who);
+		
 		//TODO instanceof operator is considered to be bad OO-design, because it is not scalable
 		
 		/*for (Animal d : animals) {
@@ -141,9 +144,9 @@ public class Kennel{
 		}*/
 		
 		if (which != null) {
-			animals.remove(which); // Requires that Dog has an equals method
+//			animals.remove(which); // Requires that Dog has an equals method
 			System.out.println("removed " + who);
-			nextFreeLocation = nextFreeLocation - 1;
+			numberAnimals = numberAnimals - 1;
 		} else{
 			System.err.println("cannot remove - not in kennel");
 		}
@@ -153,9 +156,18 @@ public class Kennel{
 	 * @return String showing all the information in the kennel
 	 */
 	public String toString() {
-		String results = "Kennel with id: " + id + " and name: " + name + " with a capacity of: " + capacity + " animals contain:\n";
-		for (Animal d : animals) {
-			results = results + d.toString() + "\n";
+		
+		// NOTE I didn't testet out with animals
+		
+		String results = "Kennel with id " + id + " and name " + name + " with a capacity of " + capacity + " animals contains";
+		
+		Animal[] animals = obtainAllAnimal();
+		if(animals.length != 0){
+			for (Animal d : animals) {
+				results = results + d.toString() + "\n";
+			}
+		}else{
+			results = results + " 0 animals" + "\n";
 		}
 		return results;
 	}
@@ -165,8 +177,7 @@ public class Kennel{
 	 * @return An array of the correct size
 	 */
 	public Animal[] obtainAllAnimal() {
-		Animal[] result = new Animal[animals.size()];
-		result = animals.toArray(result);
+		Animal[] result = null;
 		return result;
 	}
 
@@ -177,8 +188,10 @@ public class Kennel{
 	public Animal[] obtainAnimalWhoLikeBones() {
 		
 		ArrayList<Animal> anims = new ArrayList<Animal>();
+
+		Animal[] allAnimals = null;
 		
-		for(Animal a: animals){
+		for(Animal a: allAnimals){
 			
 			if(a instanceof Dog) {
 				System.out.println(a.getName()+ "is a dog");
@@ -193,16 +206,19 @@ public class Kennel{
 		return result;
 	}
 
-	public Animal search(String name) {
+	public Animal search(int idKennel, String name) {
 
-		Animal result = null;
+		//Application.getDB().searchPet(idKennel, name);
 		
-		for(Animal a: animals){
-			if(a.getName().equals(name)){
-				System.out.println("We found the pet:");
-				result = a;
-			}
-		}
+		Animal result = null;
+
+//		for(Animal a: animals){
+//			if(a.getName().equals(name)){
+//				System.out.println("We found the pet:");
+//				result = a;
+//			}
+//		}
+		
 		return result;
 	}
 
