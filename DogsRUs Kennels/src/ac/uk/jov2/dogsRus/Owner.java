@@ -8,29 +8,20 @@ package ac.uk.jov2.dogsRus;
  */
 public class Owner{
 
-	private static int id = -1;
+	private static int id;
+	private int idAnimal;
 	private String name;
 	private String phone;
 	
-	public Owner(String n, String p){
-		name = n;
+	public Owner(String n, String p) {
+		this(-1, -1, n, p);
+	}
+	
+	public Owner(int i, int idAnim, String n, String p) {
+		id = i;
 		phone = p;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
+		name= n;
+		idAnimal = idAnim;
 	}
 	
 	@Override
@@ -60,19 +51,36 @@ public class Owner{
 		return name + " " + phone;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public int getId() {
+	public static int getId() {
 		return id;
 	}
 
-	public void setId(int i) {
-		if(id == -1){
-			id = i;
-		}else{
-			System.err.println("Sorry but you can't change the ID");
-		}
+	public static void setId(int i) {
+		id = i;
+	}
+
+	public int getIdAnimal() {
+		return idAnimal;
+	}
+
+	public void setIdAnimal(int idA) {
+		idAnimal = idA;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String n) {
+		name = n;
+	}
+	
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String p) {
+		phone = p;
 	}
 
 }

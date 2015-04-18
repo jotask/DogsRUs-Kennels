@@ -1,27 +1,31 @@
 package ac.uk.jov2.dogsRus.database.util;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public class CreateDB{
+public class CheckDataBase{
 	
-	Connection conn;
-	
-	// TODO
-	
-	/*
-	public CreateDB(){
+	private static Connection conn;
 
-		DbUtil.loadDriver();
+	public CheckDataBase(){
 		
 		try {
-			conn = DriverManager.getConnection(DataBaseUtil.URL + DataBaseUtil.DB_FILE);
+			conn = DriverManager.getConnection(ConnectionFactory.URL + ";ifexists=true");
 		} catch (SQLException e) {
-			System.err.println("Exception errorcode: " + e.getErrorCode() + " " + e);
-			return;
+			System.out.println("Doesn't exist the DataBase. Creating a new one");
+			try {
+				conn = DriverManager.getConnection(ConnectionFactory.URL + ";");
+				createTables();
+				System.out.println("DataBaseCreated Succesfully!");
+			} catch (SQLException ee) {
+				// TODO Auto-generated catch block
+				System.err.println("Some big error ocurred, can't connect to the database. Please contact to me: jov2@aber.ac.uk");
+				System.exit(0);
+			}
 		}
-		
-		createTables();
-		
+
 	}
 	
 	private void createTables(){
@@ -34,7 +38,7 @@ public class CreateDB{
 		update(sql);
 	}
 	
-	public synchronized void update(String expression){
+	private synchronized void update(String expression){
 		try {
 			Statement st = null;
 			st = conn.createStatement(); // statements
@@ -48,5 +52,5 @@ public class CreateDB{
 			ex3.printStackTrace();
 		}
 	}
-*/
+
 }
