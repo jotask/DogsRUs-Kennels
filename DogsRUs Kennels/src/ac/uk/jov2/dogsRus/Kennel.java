@@ -1,5 +1,6 @@
 package ac.uk.jov2.dogsRus;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -28,8 +29,8 @@ public class Kennel implements Serializable{
 	 * @param maxNoAnimals
 	 *            The capacity of the kennel
 	 */
-	public Kennel(){
-		this(20);
+	public Kennel(String name){
+		this(name, 20);
 	}
 	
 	/**
@@ -38,14 +39,11 @@ public class Kennel implements Serializable{
 	 * @param maxNoDogs
 	 *            The capacity of the kennel
 	 */
-	public Kennel(int maxNoAnimal) {
+	public Kennel(String n, int maxNoAnimal) {
 		nextFreeLocation = 0; // no Dogs in collection at start
 		capacity = maxNoAnimal;
-		animals = new ArrayList<Animal>(capacity); // set up default. This can
-												// actually be exceeded
-												// when using ArrayList but we
-												// won't allow that
-												// to happen.
+		name = n;
+		animals = new ArrayList<Animal>(capacity);
 	}
 
 	/**
@@ -55,6 +53,15 @@ public class Kennel implements Serializable{
 	 * @param theName
 	 */
 	public void setName(String theName) {
+		// TODO change the name of the file for when we change the name of the kennel
+		String path = DataBase.getPath();
+		System.out.println(path);
+		File oldfile = new File(path + name);
+		File newfile = new File(path + theName);
+ 
+		if(!oldfile.renameTo(newfile)){
+			System.err.println("Rename failed");
+		}
 		name = theName;
 	}
 	
@@ -103,7 +110,7 @@ public class Kennel implements Serializable{
 	 */
 	public void addAnimal(Animal theAnimal) {
 		if (nextFreeLocation >= capacity) {
-			System.out.println("Sorry kennel is full - cannot add team");
+			System.out.println("Sorry kennel is full - cannot add them");
 			return;
 		}
 		// we add in the position indexed by nextFreeLocation
@@ -122,16 +129,9 @@ public class Kennel implements Serializable{
 	 */
 	public void removeAnimal(String who) {
 		Animal which = null;
-		// Search for the dog by name
+		// Search for the pet by name
 		which = search(who);
 		//TODO instanceof operator is considered to be bad OO-design, because it is not scalable
-		
-		/*for (Animal d : animals) {
-			if (who.equals(d.getName())) {
-				which = d;
-			}
-		}*/
-		
 		if (which != null) {
 			animals.remove(which); // Requires that Dog has an equals method
 			System.out.println("removed " + who);
@@ -145,9 +145,14 @@ public class Kennel implements Serializable{
 	 * @return String showing all the information in the kennel
 	 */
 	public String toString() {
-		String results = "Kennel with name: " + name + " with a capacity of: " + capacity + " animals contain:\n";
-		for (Animal d : animals) {
-			results = results + d.toString() + "\n";
+		String results = "Kennel with name: " + name + " and with a capacity of: " + capacity + " animals contain ";
+		if(!animals.isEmpty()){
+			results = results + "\n";
+			for (Animal d : animals) {
+				results = results + d.toString() + "\n";
+			}
+		}else{
+			results = results + "0 animals";
 		}
 		return results;
 	}
@@ -173,8 +178,8 @@ public class Kennel implements Serializable{
 		for(Animal a: animals){
 			
 			if(a instanceof Dog) {
-				System.out.println(a.getName()+ "is a dog");
-				if(((Dog) a).getLikesBones() == true){
+				//System.out.println(a.getName()+ "is a dog");
+				if(((Dog) a).getLikesBones()){
 					anims.add(a);
 				}
 			}

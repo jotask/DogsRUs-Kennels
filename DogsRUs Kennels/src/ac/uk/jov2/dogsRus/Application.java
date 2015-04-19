@@ -34,10 +34,7 @@ public class Application {
 	}
 	
 	private void chooseKennel() {
-		//System.out.print("Please enter the filename of kennel information: ");
-		//filename = scan.next();
 		db = new DataBase();
-		kennel = new Kennel();
 		load(db.getDB());	
 	}
 	
@@ -67,7 +64,8 @@ public class Application {
 
 	private void addDog() {
 		boolean lb = false;
-		System.out.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
+		boolean takeWal = false;
+		System.out.println("Let's enter a new Dog to this kennel");
 		String name = scan.nextLine();
 		ArrayList<Owner> owners = getOwners();
 		System.out.println("Does he like bones? (Y/N)");
@@ -76,18 +74,25 @@ public class Application {
 		if (likeBones.equals("Y")) {
 			lb = true;
 		}
+		System.out.println("Does he need teek to walk? (Y/N)");
+		String takeWalk;
+		takeWalk = scan.nextLine().toUpperCase();
+		if (takeWalk.equals("Y")) {
+			takeWal = true;
+		}
 		System.out.println("What is his/her favourite food?");
 		String fav;
 		fav = scan.nextLine();
 		System.out.println("How many times is he/she fed a day? (as a number)");
 		int numTimes;
-		numTimes = askForInt();
-		scan.nextLine();
-		Dog dog = new Dog(name, owners, lb, fav, numTimes);
+		numTimes = Util.askForInt();
+		Dog dog = new Dog(name, owners, lb, fav, numTimes, takeWal);
 		kennel.addAnimal(dog);
 	}
 
 	private void addCat() {
+		boolean canShare = false;
+		boolean needPett = false;
 		System.out.println("enter on separate lines: name, owner-name, owner-phone, likeBones?, favourite food, number of times fed");
 		String name = scan.nextLine();
 		ArrayList<Owner> owners = getOwners();
@@ -96,31 +101,21 @@ public class Application {
 		fav = scan.nextLine();
 		System.out.println("How many times is he/she fed a day? (as a number)");
 		int numTimes;
-		numTimes = askForInt();
-		scan.nextLine();
-		Cat cat = new Cat(name, owners, fav, numTimes);
+		numTimes = Util.askForInt();
+		System.out.println("They is nice with other cats? Can share a run?");
+		String canShareR;
+		canShareR = scan.nextLine().toUpperCase();
+		if (canShareR.equals("Y")) {
+			canShare = true;
+		}
+		System.out.println("They need daily petting?");
+		String dailyPet;
+		dailyPet = scan.nextLine().toUpperCase();
+		if (dailyPet.equals("Y")) {
+			needPett = true;
+		}
+		Cat cat = new Cat(name, owners, fav, numTimes, canShare, needPett);
 		kennel.addAnimal(cat);
-		
-	}
-	
-	private int askForInt(){
-		
-		int r = -1;
-		boolean canExit = false;
-		
-		do{
-			try {
-				r = scan.nextInt();
-			} catch (Exception e) {
-				System.out.println("Is not a number. Please enter a valid number");
-				scan.next();
-			}
-			if(r != -1){
-				canExit = true;
-			}
-		}while(!canExit);
-		
-		return r;
 		
 	}
 
@@ -148,18 +143,15 @@ public class Application {
 				searchForAnimal();
 				break;
 			case "5":
-				removeDog();
+				removeAnimal();
 				break;
 			case "6":
 				setKennelCapacity();
 			    break;
 			case "7":
-				displayAllAnimals();
-			    break;
-			case "8":
 				printAll();
 			    break;
-			case "9":
+			case "8":
 				save(db.getDB());
 				chooseKennel();
 			    break;
@@ -169,15 +161,6 @@ public class Application {
 				System.out.println("Try again");
 			}
 		} while (!(response.equals("Q")));
-	}
-
-	private void displayAllAnimals() {
-		Animal[] allAnimals = kennel.obtainAllAnimal();
-						
-		for (Animal anim : allAnimals){
-			System.out.println(anim);
-		}
-		
 	}
 
 	private void setKennelCapacity() {
@@ -191,8 +174,12 @@ public class Application {
 		Animal[] animalWithBones = kennel.obtainAnimalWhoLikeBones();
 		if(animalWithBones != null){
 			System.out.println("Dogs with bones: ");
-			for (Animal d: animalWithBones){
-				System.out.println(d);
+			if(animalWithBones.length != 0){
+				for (Animal d: animalWithBones){
+					System.out.println(d);
+				}
+			}else{
+				System.out.println("There are any dog who like bones in this kennel");
 			}
 		}else{
 			System.out.println("Sorry we don't have any dogs who like bones in this kennel.");
@@ -206,7 +193,7 @@ public class Application {
 		System.out.println(kennel);
 	}
 
-	private void removeDog() {
+	private void removeAnimal() {
 		System.out.println("Which dog do you want to remove?");
 		String dogtoberemoved;
 		dogtoberemoved = scan.nextLine();
@@ -253,14 +240,12 @@ public class Application {
 		System.out.println("4 - search for a pet");
 		System.out.println("5 - remove a pet");
 		System.out.println("6 - set kennel capacity");
-		System.out.println("7 - display all animals");
-		System.out.println("8 - Print Kennel");
-		System.out.println("9 - change Kennel");
+		System.out.println("7 - Print Kennel");
+		System.out.println("8 - change Kennel");
 		System.out.println("q - Quit");
 	}
 
    private void save(String db){
-	   System.out.println("SaveIt");
        try{
          FileOutputStream fos= new FileOutputStream(db);
          ObjectOutputStream oos= new ObjectOutputStream(fos);
@@ -291,12 +276,16 @@ public class Application {
        kennel = k;
    }
 
+	public Scanner getScan() {
+		return scan;
+	}
+
 	// /////////////////////////////////////////////////
 	public static void main(String args[]) {
-		System.out.println("**********HELLO***********");
+		System.out.println("********** Welcome ***********");
 		Application app = new Application();
 		app.runMenu();
 		app.save(db.getDB());
-		System.out.println("***********GOODBYE**********");
+		System.out.println("*********** GoodBye**********");
 	}
 }

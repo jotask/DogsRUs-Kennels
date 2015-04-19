@@ -23,7 +23,7 @@ public class Animal implements Serializable{
 	 * @param food The kind of food it eats
 	 * @param mealsPerDay Number of feeds per day 
 	 */
-	public Animal(String n, ArrayList<Owner> owners, String food, int mealsPerDay){
+	public Animal(String n, ArrayList<Owner> owners, String food, int mealsPerDay, boolean canShare){
 
 		name = n;
 		originalOwners = new ArrayList<Owner>();
@@ -38,6 +38,7 @@ public class Animal implements Serializable{
 		
 		favFood = food;
 		foodPerDay = mealsPerDay;
+		canShareRun = canShare;
 		
 	}
 

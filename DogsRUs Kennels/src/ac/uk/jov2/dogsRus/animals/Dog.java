@@ -13,6 +13,7 @@ public class Dog extends Animal{
 	private static final long serialVersionUID = 8859045667757662983L;
 	
 	private boolean likesBones;
+	private boolean needTaketoWalk;
 
 	/**
 	 * Constructor for the dog
@@ -22,11 +23,22 @@ public class Dog extends Animal{
 	 * @param food The kind of food it eats
 	 * @param mealsPerDay Number of feeds per day 
 	 */
-	public Dog(String name, ArrayList<Owner> owners, boolean likeBones, String food, int mealsPerDay) {
-		super(name, owners, food, mealsPerDay);
-		
+	public Dog(String name, ArrayList<Owner> owners, boolean likeBones, String food, int mealsPerDay, boolean needTakeWalk) {
+		super(name, owners, food, mealsPerDay, false);
 		likesBones = likeBones;
-		
+		needTaketoWalk = needTakeWalk;
+	}
+
+	public boolean isNeedTaketoWalk() {
+		return needTaketoWalk;
+	}
+
+	public void setNeedTaketoWalk(boolean needTaketoWalk) {
+		this.needTaketoWalk = needTaketoWalk;
+	}
+
+	public void setLikesBones(boolean likesBones) {
+		this.likesBones = likesBones;
 	}
 
 	/**
@@ -41,9 +53,9 @@ public class Dog extends Animal{
 	 * A basic implementation to just return all the data in string form
 	 */
 	public String toString() {
-		return "Dog name:" + name + "Likes Bones?:" + likesBones
-				+ "Original Owner:" + originalOwners + "Favfood:" + favFood
-				+ "FoodPerDay:" + foodPerDay;
+		return "Dog with name: " + name + ", Likes Bones?: " + likesBones
+				+ ", Original Owner/s: " + originalOwners + ", Favfood: " + favFood
+				+ ", FoodPerDay: " + foodPerDay + ", The need take to walk: " + needTaketoWalk + ", Can Share a Run: " + canShareRun;
 	}
 
 }
