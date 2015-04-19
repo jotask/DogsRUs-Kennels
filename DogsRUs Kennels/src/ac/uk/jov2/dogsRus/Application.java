@@ -13,31 +13,36 @@ import ac.uk.jov2.dogsRus.animals.Cat;
 import ac.uk.jov2.dogsRus.animals.Dog;
 
 /**
- * This class runs a Kennel
+ * This is the main Class
  * 
- * @author Lynda Thomas and Chris Loftus
- * @version 1.1 (16th March 2015)
+ * @author Lynda Thomas, Chris Loftus and Jose Vives
+ * @version 1.2 (19th April 2015)
  */
 public class Application {
 
-	private static Kennel kennel; // holds the kennel
+	private static Kennel kennel; // Holds the current kennel
 	private Scanner scan; // so we can read from keyboard
-	private static DataBase db;
-
-	/*
-	 * Notice how we can make this private, since we only call from main which
-	 * is in this class. We don't want this class to be used by any other class.
+	private static DataBase db; // Holds the database and his menu
+	
+	/**
+	 * Private constructor, only can be call on this class 
 	 */
 	private Application() {
 		scan = new Scanner(System.in);
 		chooseKennel();
 	}
 	
+	/**
+	 *  When this method is call we can change the current kennel
+	 */
 	private void chooseKennel() {
 		db = new DataBase();
 		load(db.getDB());	
 	}
 	
+	/**
+	 * Sub-Menu for add an animal, this can be Cat or Dog
+	 */
 	private void addAnimal(){
 		String response;
 		do {
@@ -61,7 +66,10 @@ public class Application {
 			}
 		} while (!(response.equals("Q")));
 	}
-
+	
+	/**
+	 * Create a new Dog and add this new dog to the kennel
+	 */
 	private void addDog() {
 		boolean lb = false;
 		boolean takeWal = false;
@@ -89,7 +97,10 @@ public class Application {
 		Dog dog = new Dog(name, owners, lb, fav, numTimes, takeWal);
 		kennel.addAnimal(dog);
 	}
-
+	
+	/**
+	 * Create a new Cat and add this new cat to the kennel
+	 */
 	private void addCat() {
 		boolean canShare = false;
 		boolean needPett = false;
@@ -119,7 +130,7 @@ public class Application {
 		
 	}
 
-	/*
+	/**
 	 * runMenu() method runs from the main and allows entry of data etc
 	 */
 	private void runMenu() {
@@ -162,14 +173,20 @@ public class Application {
 			}
 		} while (!(response.equals("Q")));
 	}
-
+	
+	/**
+	 * Change the capacity from the current kennel
+	 */
 	private void setKennelCapacity() {
-		System.out.print("Enter max number of dogs: ");
+		System.out.print("Enter max number of Animal: ");
 		int max = scan.nextInt();
 		scan.nextLine();
 		kennel.setCapacity(max);
 	}
-
+	
+	/**
+	 * Print all Dogs who like bones in the current kennel
+	 */
 	private void printDogsWithBones() {
 		Animal[] animalWithBones = kennel.obtainAnimalWhoLikeBones();
 		if(animalWithBones != null){
@@ -186,13 +203,16 @@ public class Application {
 		}
 	}
 
-	/*
-	 * printAll() method runs from the main and prints status
+	/**
+	 * Prints the status of the current kennel
 	 */
 	private void printAll() {
 		System.out.println(kennel);
 	}
-
+	
+	/**
+	 * Remove one animal from the kennel
+	 */
 	private void removeAnimal() {
 		System.out.println("Which dog do you want to remove?");
 		String dogtoberemoved;
@@ -200,23 +220,34 @@ public class Application {
 		kennel.removeAnimal(dogtoberemoved);
 	}
 
+	/**
+	 * Search a animal by the name on the current kennel
+	 */
 	private void searchForAnimal() {
-		System.out.println("which Animal do you want to search for?");
+		System.out.println("Which Animal do you want to search for?");
 		String name = scan.nextLine();
 		Animal anim = kennel.search(name);
 		if (anim != null){
 			System.out.println(anim.toString());
 		} else {
-			System.out.println("Could not find dog: " + name);
+			System.out.println("Could not find animal with name: " + name);
 		}
 	}
-
+	
+	/**
+	 * Ask the user for the new name of the kennel and call the methods in kennel for change his name
+	 */
 	private void changeKennelName() {
 		System.out.println("Enter the name for the kennel");
 		String name = scan.nextLine();
 		kennel.setName(name);
 	}
 
+	/**
+	 * Ask and creates owners for when an Animal is added
+	 * 
+	 * @return An ArrayList with owners
+	 */
 	private ArrayList<Owner> getOwners() {
 		ArrayList<Owner> owners = new ArrayList<Owner>();
 		String answer;
@@ -232,6 +263,9 @@ public class Application {
 		return owners;
 	}
 
+	/**
+	 * Just print the menu
+	 */
 	private void printMenu() {
 		System.out.println("---- " + kennel.getName() + " ----");
 		System.out.println("1 - Add a new Animal");
@@ -245,6 +279,11 @@ public class Application {
 		System.out.println("q - Quit");
 	}
 
+	/**
+	 * Save the current kennel object
+	 * Serialize the object and save it on his file
+	 * @param db  The current kennel file we are working
+	 */
    private void save(String db){
        try{
          FileOutputStream fos= new FileOutputStream(db);
@@ -257,6 +296,11 @@ public class Application {
         }
    }
 
+	/**
+	 * Load a new kennel object
+	 * Read a serializabe object kennel and load it
+	 * @param db  The current kennel file selected
+	 */
    private void load(String db){
 	   Kennel k;
        try{
@@ -276,11 +320,10 @@ public class Application {
        kennel = k;
    }
 
-	public Scanner getScan() {
-		return scan;
-	}
-
-	// /////////////////////////////////////////////////
+   /**
+    * The Main method
+    * @param args
+    */
 	public static void main(String args[]) {
 		System.out.println("********** Welcome ***********");
 		Application app = new Application();
