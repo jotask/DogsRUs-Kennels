@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
+/**
+ * A class for select all the databases we have
+ * @author Jose Vives
+ *@version 1.0
+ */
 public class DataBase {
 	
 	private Scanner scan;
@@ -13,6 +18,10 @@ public class DataBase {
 	private static final String PATH = "db/";
 	private File[] files;
 
+	/**
+	 * Constructor for this class
+	 * Just initialize variables, load all the kennels we have and run the menu
+	 */
 	public DataBase(){
 		scan = new Scanner(System.in);
 		db = null;
@@ -20,12 +29,18 @@ public class DataBase {
 		menu();
 	}
 	
+	/**
+	 * Read all the kennels they store on the arraylist
+	 */
 	private void loadKennels(){
 		files = null;
 		File directory = new File(PATH);
 		files = directory.listFiles();
 	}
 	
+	/**
+	 * Just print the menu with options
+	 */
 	private void printMenu() {
 		System.out.println("------------------------------------------------------");
 		if(files.length != 1){
@@ -40,8 +55,10 @@ public class DataBase {
 		}
 	}
 	
+	/**
+	 * All the menu code
+	 */
 	private void menu(){
-
 		String response;
 		boolean correct = false;
 		
@@ -72,6 +89,9 @@ public class DataBase {
 		}while(!correct);
 	}
 
+	/**
+	 * Print all the kennels we have for use
+	 */
 	private void listAllDB(){
 		 		
 		for(File f: files){
@@ -83,6 +103,9 @@ public class DataBase {
 		
 	}
 	
+	/**
+	 * Create a new Kennel
+	 */
 	private void createDB(){
 
 		String name;
@@ -120,7 +143,7 @@ public class DataBase {
 					e.printStackTrace();
 				}
 				Kennel k = new Kennel(name, size);
-				save(PATH + name, k);
+				save(name, k);
 				correct = true;
 			}else{
 				System.out.println("Sorry but this name already exist on the DataBase. Please insert a different name for the kennel.");
@@ -130,6 +153,9 @@ public class DataBase {
 		loadKennels();
 	}
 	
+	/**
+	 * Delete a existent kennel file
+	 */
 	private void deleteDB(){
 		String response;
 		boolean correct = false;
@@ -161,30 +187,39 @@ public class DataBase {
 		loadKennels();
 	}
 	
+	/**
+	 * Know which file is selected
+	 * @return the selected kennel
+	 */
 	public String getDB(){
 		String r = PATH + db;
 		return r;
 	}
 	
-   private void save(String db, Kennel k){
-       try{
-         FileOutputStream fos= new FileOutputStream(db);
-         ObjectOutputStream oos= new ObjectOutputStream(fos);
-         oos.writeObject(k);
-         oos.close();
-         fos.close();
-       }catch(IOException ioe){
-            ioe.printStackTrace();
-            System.err.println("Error trying the save");
-        }
-   }
-	
-	public static String getPath() {
-		return PATH;
+	/**
+	 * Save the created method
+	 * @param db Is the name of the new Kennel
+	 * @param k is the kennel to serialize
+	 */
+	private void save(String db, Kennel k){
+		try{
+			FileOutputStream fos= new FileOutputStream(PATH + db);
+			ObjectOutputStream oos= new ObjectOutputStream(fos);
+			oos.writeObject(k);
+			oos.close();
+			fos.close();
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+			System.err.println("Error trying the save");
+		}
 	}
 	
-	public File[] getFiles() {
-		return files;
+	/**
+	 * Know the path where is the databases
+	 * @return the path
+	 */
+	public static String getPath() {
+		return PATH;
 	}
 	
 }

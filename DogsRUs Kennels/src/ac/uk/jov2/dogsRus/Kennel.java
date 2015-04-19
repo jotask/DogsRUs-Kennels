@@ -9,10 +9,10 @@ import ac.uk.jov2.dogsRus.animals.Dog;
 
 /**
  * 
- * To model a Kennel - a collection of dogs
+ * To model a Kennel - a collection of animals
  * 
- * @author Chris Loftus
- * @version 1.0 (16th March 2015)
+ * @author Chris Loftus and Jose Vives
+ * @version 1.0 (19th April 2015)
  *
  */
 public class Kennel implements Serializable{
@@ -25,19 +25,17 @@ public class Kennel implements Serializable{
 
 	/**
 	 * Creates a kennel with a default size 20
-	 * 
-	 * @param maxNoAnimals
-	 *            The capacity of the kennel
+	 * @param name the name of the kennel
+	 * @param maxNoAnimals The capacity of the kennel
 	 */
 	public Kennel(String name){
 		this(name, 20);
 	}
 	
 	/**
-	 * Create a kennel
-	 * 
-	 * @param maxNoDogs
-	 *            The capacity of the kennel
+	 * Creates a kennel with a default size 20
+	 * @param name the name of the kennel
+	 * @param maxNoAnimals The capacity of the kennel
 	 */
 	public Kennel(String n, int maxNoAnimal) {
 		nextFreeLocation = 0; // no Dogs in collection at start
@@ -49,11 +47,11 @@ public class Kennel implements Serializable{
 	/**
 	 * This method sets the value for the name attribute. The purpose of the
 	 * attribute is: The name of the kennel e.g. "DogsRUs"
+	 * And change the filename for this kennel too
 	 * 
 	 * @param theName
 	 */
 	public void setName(String theName) {
-		// TODO change the name of the file for when we change the name of the kennel
 		String path = DataBase.getPath();
 		System.out.println(path);
 		File oldfile = new File(path + name);
@@ -67,12 +65,14 @@ public class Kennel implements Serializable{
 	
 	/**
 	 * Set the size of the kennel
-	 * @param capacity The max dogs we can house
+	 * @param capacity The max animals we can house
 	 */
 	public void setCapacity(int cap){
-		// This should really check to see if we already have dogs
-		// in the kennel and reducing the capacity would lead to evictions!
-		capacity = cap;
+		if(animals.size() < cap){
+			capacity = cap;
+		}else{
+			System.err.println("Sorry but in this kennel we have " + animals.size() + ", you can't set the size less than the number of animals inside the kennel");
+		}
 	}
 	
 	/**
@@ -86,7 +86,6 @@ public class Kennel implements Serializable{
 	/**
 	 * This method gets the value for the name attribute. The purpose of the
 	 * attribute is: The name of the Kennel e.g. "DogsRUs"
-	 * 
 	 * @return String The name of the kennel
 	 */
 	public String getName() {
@@ -94,9 +93,8 @@ public class Kennel implements Serializable{
 	}
 
 	/**
-	 * This method returns the number of dogs in a kennel
-	 * 
-	 * @return int Current number of dogs in the kennel
+	 * This method returns the number of animal in a kennel
+	 * @return int Current number of animals in the kennel
 	 */
 	public int getNumOfAnimals() {
 		return nextFreeLocation;
@@ -104,9 +102,8 @@ public class Kennel implements Serializable{
 
 	/**
 	 * Enables a user to add a Dog to the Kennel
-	 * 
 	 * @param theDog
-	 *            A new dog to home
+	 *            A new animal to home
 	 */
 	public void addAnimal(Animal theAnimal) {
 		if (nextFreeLocation >= capacity) {
@@ -123,7 +120,6 @@ public class Kennel implements Serializable{
 
 	/**
 	 * Enables a user to delete a Animal from the Kennel.
-	 * 
 	 * @param theAnimal
 	 *            The animal to remove
 	 */
@@ -172,11 +168,9 @@ public class Kennel implements Serializable{
 	 * @return An array of dogs of the correct size. If no dogs like bones then returns an empty array (size 0)
 	 */
 	public Animal[] obtainAnimalWhoLikeBones() {
-		
 		ArrayList<Animal> anims = new ArrayList<Animal>();
 		
 		for(Animal a: animals){
-			
 			if(a instanceof Dog) {
 				//System.out.println(a.getName()+ "is a dog");
 				if(((Dog) a).getLikesBones()){
@@ -190,8 +184,12 @@ public class Kennel implements Serializable{
 		return result;
 	}
 
+	/**
+	 * Search an animal on the current kennel
+	 * @param name the name of the animal
+	 * @return the animal founded
+	 */
 	public Animal search(String name) {
-
 		Animal result = null;
 		
 		for(Animal a: animals){

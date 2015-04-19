@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import ac.uk.jov2.dogsRus.Owner;
 
 /**
- * To support an individual dog
- * @author Chris Loftus
- * @version 1.0 (16th March 2015)
+ * To support an individual Dog
+ * @author Chris Loftus and Jose Vives
+ * @version 1.2 (19th April 2015)
  */
 public class Dog extends Animal{
 
@@ -22,6 +22,8 @@ public class Dog extends Animal{
 	 * @param likeBones Does the dog like bones?
 	 * @param food The kind of food it eats
 	 * @param mealsPerDay Number of feeds per day 
+	 * @param canShare Know if the animal can share runs. Always false for dogs
+	 * @param needTakeWalk Know if the dog needs take to walk outside
 	 */
 	public Dog(String name, ArrayList<Owner> owners, boolean likeBones, String food, int mealsPerDay, boolean needTakeWalk) {
 		super(name, owners, food, mealsPerDay, false);
@@ -29,14 +31,25 @@ public class Dog extends Animal{
 		needTaketoWalk = needTakeWalk;
 	}
 
+	/**
+	 * They need go outside to walk
+	 * @return If they need
+	 */
 	public boolean isNeedTaketoWalk() {
 		return needTaketoWalk;
 	}
-
-	public void setNeedTaketoWalk(boolean needTaketoWalk) {
-		this.needTaketoWalk = needTaketoWalk;
+	/**
+	 * Change if the dog need go outside to walk
+	 * @param needTaketoWalk the changed state
+	 */
+	public void setNeedTaketoWalk(boolean needTakeWalk) {
+		needTaketoWalk = needTakeWalk;
 	}
 
+	/**
+	 * Change if the dog likes bones or not
+	 * @param likesBones 
+	 */
 	public void setLikesBones(boolean likesBones) {
 		this.likesBones = likesBones;
 	}
@@ -48,9 +61,10 @@ public class Dog extends Animal{
 	public boolean getLikesBones() {
 		return likesBones;
 	}
-
+	
 	/**
-	 * A basic implementation to just return all the data in string form
+	 * To string method
+	 * @return A string with all the information from the dog
 	 */
 	public String toString() {
 		return "Dog with name: " + name + ", Likes Bones?: " + likesBones

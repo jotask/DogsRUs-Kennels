@@ -1,12 +1,13 @@
 package ac.uk.jov2.dogsRus.animals;
+
 import java.util.ArrayList;
 
 import ac.uk.jov2.dogsRus.Owner;
 
 /**
- * To support an individual dog
- * @author Chris Loftus
- * @version 1.0 (16th March 2015)
+ * To support an individual Cat
+ * @author Chris Loftus and Jose Vives
+ * @version 1.2 (19th April 2015)
  */
 public class Cat extends Animal{
 
@@ -21,22 +22,33 @@ public class Cat extends Animal{
 	 * @param likeBones Does the cat like bones?
 	 * @param food The kind of food it eats
 	 * @param mealsPerDay Number of feeds per day 
+	 * @param canShare Know if the animal can share runs
+	 * @param canShare Know if the animal needs daily petting
 	 */
 	public Cat(String name, ArrayList<Owner> owners, String food, int mealsPerDay, boolean canShare, boolean needPett) {
 		super(name, owners, food, mealsPerDay, canShare);
 		needPetting = needPett;
 	}
 
+	/**
+	 * Know if need daiy pettin
+	 * @return A boolean for know if this cat needs daily petting
+	 */
 	public boolean isNeedPetting() {
 		return needPetting;
 	}
 
-	public void setNeedPetting(boolean needPetting) {
-		this.needPetting = needPetting;
-	}
-
 	/**
-	 * A basic implementation to just return all the data in string form
+	 * Change if need this cat daily petting
+	 * @param needPetting For set thi
+	 */
+	public void setNeedPetting(boolean needPeting) {
+		needPetting = needPeting;
+	}
+	
+	/**
+	 * To string method
+	 * @return A string with all the information from the cat
 	 */
 	public String toString() {
 		return "Cat with name: " + name + ", Original Owner/s: " + originalOwners + ", Favfood: " + favFood
